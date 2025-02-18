@@ -1,4 +1,5 @@
-@extends('products.layout')
+@extends('layouts.admin.admin_layout')
+
   
 @section('content')
 <div class="card mt-5">
