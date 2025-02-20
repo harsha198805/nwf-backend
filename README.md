@@ -1,5 +1,5 @@
 # Product-Management-System
-Laravel 11 Product management system 
+Laravel 11 NorthWest Fishery Managment System
 
 2025-02-18
 
