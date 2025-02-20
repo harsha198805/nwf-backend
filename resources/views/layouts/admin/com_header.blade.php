@@ -13,8 +13,7 @@
 
 		<!-- Title -->
 		<title>Admin</title>
-
-
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
 		<!-- *************
 			************ Common Css Files *************
 		************ -->
@@ -44,5 +43,7 @@
 
 		<!-- Summernote CSS -->
         <link rel="stylesheet" href="{{ URL::to('assets/admin/vendor/summernote/summernote-bs4.css') }}">
+        <link rel="stylesheet" href="{{ URL::to('assets\admin\vendor\toaster\toastr.min.css') }}">
+        <link rel="stylesheet" href="{{ URL::to('assets\admin\vendor\swetalert\sweetalert2.min.css') }}">
 
 	</head>

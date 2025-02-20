@@ -7,7 +7,7 @@
 		**************************-->
         <script src="{{ URL::to('assets/admin/vendor/particles/particles.js') }}"></script>
         
-        <script src="{{ URL::to('assets/admin/vendor/particles//app.js') }}"></script>
+        <script src="{{ URL::to('assets/admin/vendor/particles/app.js') }}"></script>
 
 		<!-- Required jQuery first, then Bootstrap Bundle JS -->
         <script src="{{ URL::to('assets/admin/js/jquery.min.js') }}"></script>
@@ -52,6 +52,8 @@
 
 		<!-- Summernote JS -->
         <script src="{{ URL::to('assets/admin/vendor/summernote/summernote-bs4.js') }}"></script>
+        <script src="{{ URL::to('assets\admin\vendor\toaster\toastr.min.js') }}"></script>
+        <script src="{{ URL::to('assets\admin\vendor\swetalert\sweetalert2.min.js') }}"></script>
 		<script>
 			$(document).ready(function() {
 				$('.summernote').summernote({
@@ -59,6 +61,25 @@
 					tabsize: 2
 				});
 			});
+		</script>
+		<script>
+			toastr.options = {
+				"closeButton": true,
+				"debug": false,
+				"newestOnTop": true,
+				"progressBar": true,
+				"positionClass": "toast-top-right",
+				"preventDuplicates": false,
+				"onclick": null,
+				"showDuration": "300",
+				"hideDuration": "1000",
+				"timeOut": "5000",
+				"extendedTimeOut": "1000",
+				"showEasing": "swing",
+				"hideEasing": "linear",
+				"showMethod": "fadeIn",
+				"hideMethod": "fadeOut"
+			};
 		</script>
 
 		<!-- Main JS -->

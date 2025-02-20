@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -67,8 +68,49 @@ class ProductController extends Controller
         return view('products.create', compact('category'));
     }
 
+
+    public function store(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|integer|exists:categories,id',
+
+            'slug' => 'required|string|unique:products,slug',
+            'price' => 'required|numeric',
+            'sale_price' => 'nullable|numeric',
+            'tags' => 'nullable|string',
+            'weight' => 'nullable|numeric',
+            'new_arrivals' => 'nullable|boolean',
+            'featured_products' => 'nullable|boolean',
+            'short_description' => 'nullable|string',
+            'long_description' => 'nullable|string',
+            'image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'meta_title' => 'nullable|string',
+            'meta_description' => 'nullable|string',
+            'focus_keywords' => 'nullable|string',
+        ]);
+
+        // Handle file uploads
+        $data = $request->all();
+        foreach (['image_1', 'image_2', 'image_3', 'image_4'] as $imageField) {
+            if ($request->hasFile($imageField)) {
+                $data[$imageField] = $request->file($imageField)->store('products', 'public');
+            }
+        }
+
+        $data['slug'] = Str::slug($request->input('name'), '-');
+
+        // Save the product
+        Product::create($data);
+
+        return response()->json(['success' => 'Product created successfully!']);
+    }
     // This method will store a product in db
-    public function store(Request $request) {
+    public function store11(Request $request) {
         $rules = [
             'name' => 'required',
             'category_id' => 'required',

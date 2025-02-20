@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -12,56 +13,140 @@ class CategoryController extends Controller
     {
         $this->middleware('auth');
     }
-    
-    public function index() {
-        $category = Category::orderBy('created_at','DESC')->paginate(5);
 
-        return view('categories.index',compact('category'))
-                    ->with('i', (request()->input('page', 1) - 1) * 5);
-    }
-
-    public function create()
+    public function index(Request $request)
     {
-        return view('categories.create');
+        $query = Category::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        $categories = $query->orderBy('created_at', 'desc')->paginate(10);
+        return view('categories.index', compact('categories'));
+    }
+    public function getdata(Request $request)
+    {
+        $query = Category::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+        $categories = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return response()->json([
+            'categories' => $categories,
+        ]);
+
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'slug' => 'required|unique:categories,slug',
             'description' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status' => 'required|in:1,0',
         ]);
 
-        Category::create($request->all());
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
-    }
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . mt_rand(100000, 999999) . '.' . $extension;
+            $file->move(public_path('uploads/category'), $fileName);
+        } else {
+            $fileName = null;
+        }
 
-    public function show(Category $category)
-    {
-        return view('categories.show', compact('category'));
-    }
-
-    public function edit(Category $category)
-    {
-        return view('categories.edit', compact('category'));
-    }
-
-    public function update(Request $request, Category $category)
-    {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'nullable',
+        $category = Category::create([
+            'name' => $request->name,
+            'slug' => $request->slug,
+            'description' => $request->description,
+            'image' => $fileName,
+            'status' => $request->status,
         ]);
 
-        $category->update($request->all());
-
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+        return response()->json(['success' => 'Category created successfully']);
     }
 
-    public function destroy(Category $category)
+
+    public function edit($id)
     {
+        $category = Category::find($id);
+
+        if ($category) {
+            return response()->json(['category' => $category]);
+        }
+
+        return response()->json(['error' => 'Category not found'], 404);
+    }
+
+    public function update(Request $request, $id)
+    {
+
+        $category = Category::findOrFail($id);
+
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'slug' => 'required|unique:categories,slug,' . $category->id,
+            'description' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status' => 'required|in:1,0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
+
+        if ($request->hasFile('image')) {
+            if ($category->image && file_exists(public_path('uploads/category/' . $category->image))) {
+                unlink(public_path('uploads/category/' . $category->image));
+            }
+
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . mt_rand(100000, 999999) . '.' . $extension;
+            $file->move(public_path('uploads/category'), $fileName);
+        } else {
+            $fileName = $category->image;
+        }
+
+        $category->update([
+            'name' => $request->name,
+            'slug' => $request->slug,
+            'description' => $request->description,
+            'image' => $fileName,
+            'status' => $request->status,
+        ]);
+
+        return response()->json(['success' => 'Category updated successfully']);
+    }
+
+    public function destroy($id)
+    {
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        if ($category->image && file_exists(public_path('uploads/category/' . $category->image))) {
+            unlink(public_path('uploads/category/' . $category->image));
+        }
+
         $category->delete();
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+        return response()->json(['success' => 'Category deleted successfully']);
     }
+
 }

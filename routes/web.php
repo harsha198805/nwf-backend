@@ -45,7 +45,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
             Route::get('/categories/show/{category}','show')->name('categories.show');
             Route::post('/categories','store')->name('categories.store');
             Route::get('/categories/edit/{category}','edit')->name('categories.edit');
-            Route::put('/categories/{category}','update')->name('categories.update');
+            Route::POST('/categories/{category}','update')->name('categories.update');
             Route::delete('/categories/{category}','destroy')->name('categories.destroy');    
+            Route::get('/categories/search', 'search')->name('categories.search');
+            Route::get('/categories/getdata', 'getdata')->name('categories.getdata');
         });
     });

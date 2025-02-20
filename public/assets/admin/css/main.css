@@ -8052,3 +8052,70 @@ code {
   font-size: 20px;
   float: right;
 }
+
+#slug {
+  text-transform: none;
+}
+
+.pagination_admin {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.pagination_admin button {
+  margin: 0 5px;
+  border-radius: 50px;
+  font-size: 14px;
+  padding: 6px 12px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination_admin button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.pagination_admin button.disabled {
+  background-color: #f1f1f1;
+  color: #999;
+  pointer-events: none;
+}
+
+.pagination_admin button.active {
+  background-color: #007bff;
+  color: #fff;
+  pointer-events: none;
+}
+
+.pagination_admin {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.pagination_admin button {
+  margin: 0 5px;
+  border-radius: 50px;
+  font-size: 14px;
+  padding: 6px 12px;
+  transition: background-color 0.3s, color 0.3s;
+  border: none; /* Ensure buttons don't have borders */
+}
+
+.pagination_admin button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.pagination_admin button.disabled {
+  background-color: #f1f1f1;
+  color: #999;
+  pointer-events: none;
+}
+
+.pagination_admin button.active {
+  background-color: #007bff !important; /* Use !important to override Bootstrap */
+  color: #fff !important;
+  pointer-events: none;
+}
