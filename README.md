@@ -1,18 +1,15 @@
 # Product-Management-System
 Laravel 11 Product management system 
 
-2024-12-19
+2025-02-18
 
-git clone https://github.com/harsha198805/Product-Management-System.git
+git clone https://github.com/harsha198805/nwf-backend.git
 
-
-cd Product-Management-System
+cd nwf-backend
 
 composer install
 
 cp .env.example .env
-
-change DB_CONNECTION=sqlite to DB_CONNECTION=mysql
 
 php artisan key:generate
 
