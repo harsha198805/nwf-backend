@@ -8050,7 +8050,26 @@ code {
 .pro-image-delete {
   color: #c80202;
   font-size: 20px;
-  float: right;
+  float: left;
+  margin-left: 20px;
+}
+
+.imagePreview{
+  max-width: 200px; 
+  display: none;
+  margin-left: 10px;
+}
+
+.show-image-preview {
+  display: inline-block;
+}
+.image-preview {
+  max-width: 200px;
+  margin-top: 10px;
+}
+
+.preview-container {
+  margin-top: 10px;
 }
 
 #slug {

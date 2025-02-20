@@ -82,5 +82,6 @@
 			};
 		</script>
 
+
 		<!-- Main JS -->
         <script src="{{ URL::to('assets/admin/js/main.js') }}"></script>

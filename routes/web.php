@@ -49,5 +49,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
             Route::delete('/categories/{category}','destroy')->name('categories.destroy');    
             Route::get('/categories/search', 'search')->name('categories.search');
             Route::get('/categories/getdata', 'getdata')->name('categories.getdata');
+            Route::PUT('/categories/update-status', 'updateStatus')->name('categories.updateStatus');
         });
     });

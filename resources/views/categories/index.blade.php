@@ -96,7 +96,6 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="image">Add Image</label>
-                                    <label class="pro-image-delete"><span class="icon-delete"></span></label>
                                     <div class="input-group">
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input" id="inputGroupFile02" name="image">
@@ -107,10 +106,13 @@
                                 </div>
                             </div>
                             <div class="col-12">
-                                <div class="form-group">
-                                    <div id="currentImage"></div>
+                                <div id="imagePreviewContainer" style="margin-top: 10px;">
+                                    <label class="pro-image-delete"><span id="removeImage" class="icon-delete hidden"></span></label>
+                                    <img id="imagePreview" class="imagePreview image-preview hidden" src="" alt="Image Preview">
+
                                 </div>
                             </div>
+
                             <div class="col-xl-12 col-12">
                                 <div class="form-group">
                                     <label for="status">Status</label>
@@ -262,7 +264,7 @@
                     <td>Admin</td>
                     <td>
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" ${category.status == 1 ? 'checked' : ''} id="customSwitch${category.id}">
+                            <input type="checkbox" class="custom-control-input" ${category.status == 1 ? 'checked' : ''} id="customSwitch${category.id}" onchange="toggleStatus(${category.id}, this.checked)">
                             <label class="custom-control-label" for="customSwitch${category.id}"></label>
                         </div>
                     </td>
@@ -377,5 +379,44 @@
             timeZone: 'UTC'
         }).replace(',', '');
     }
+
+    function toggleStatus(categoryId, status) {
+        $.ajax({
+            url: '/categories/update-status',
+            method: 'PUT',
+            data: {
+                id: categoryId,
+                status: status ? 1 : 0,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    toastr.success('Status updated successfully.');
+                } else {
+                    toastr.error('Failed to update status.');
+                }
+            },
+            error: function(xhr) {
+                toastr.error('An error occurred while updating the status.');
+            }
+        });
+    }
+    $("#inputGroupFile02").change(function(event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                $("#imagePreview").attr("src", e.target.result).addClass("show-image-preview");
+                $("#removeImage").removeClass("hidden");
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    $("#removeImage").click(function() {
+        $("#inputGroupFile02").val("");
+        $("#imagePreview").attr("src", "").removeClass("show-image-preview");
+        $("#removeImage").addClass("hidden");
+    });
 </script>
 @endpush

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryController extends Controller
 {
@@ -39,7 +39,6 @@ class CategoryController extends Controller
         return response()->json([
             'categories' => $categories,
         ]);
-
     }
 
     public function store(Request $request)
@@ -149,4 +148,19 @@ class CategoryController extends Controller
         return response()->json(['success' => 'Category deleted successfully']);
     }
 
+    public function updateStatus(Request $request)
+    {
+        $category = Category::find($request->id);
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+        try {
+            $category->status = $request->status;
+            $category->save();
+
+            return response()->json(['success' => 'Status updated successfully.']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['success' => false, 'message' => 'Category not found']);
+        }
+    }
 }
