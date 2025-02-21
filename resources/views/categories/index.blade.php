@@ -14,7 +14,7 @@
                     </div>
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
                         <div class="btn-alignment">
-                            <button class="btn btn-info add-btn float-right" data-toggle="modal" data-target=".product-add">
+                            <button id="add_btn" class="btn btn-info add-btn float-right" data-toggle="modal" data-target=".product-add">
                                 <i class="icon-plus"></i> Add
                             </button>
                         </div>
@@ -157,44 +157,6 @@
                 .replace(/^-+/, '')
                 .replace(/-+$/, '');
         }
-        $(document).on('submit', '#categoryForm444', function(e) {
-            e.preventDefault();
-
-            let formElement = document.getElementById('categoryForm');
-            let formData = new FormData(formElement);
-
-            let categoryId = $('#category_id').val();
-            let url = categoryId ? '/categories/' + categoryId : '/categories';
-            let method = categoryId ? 'POST' : 'POST';
-
-            $.ajax({
-                url: url,
-                type: method,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.errors) {
-                        $.each(response.errors, function(key, value) {
-                            $('#' + key + 'Error').text(value);
-                        });
-                    } else {
-                        toastr.success(response.success);
-                        $('#categoryForm')[0].reset();
-                        $('#category_id').val('');
-                        $('#submitBtn').text('Submit');
-                        fetchCategories();
-                        $('#categoryModal').modal('hide');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log('Error:', error);
-                }
-            });
-        });
 
         $('#categoryForm').on('submit', function(e) {
             e.preventDefault();
@@ -242,6 +204,13 @@
         $('.summernote').summernote({
             height: 200,
         });
+    });
+
+    $('#add_btn').on('click', function(e) {
+        $('#categoryForm')[0].reset();
+        $('#description').summernote('code', '');
+        $("#imagePreview").attr("src", "").removeClass("show-image-preview");
+        $("#removeImage").addClass("hidden");
     });
 
     function fetchCategories(page = 1) {
@@ -318,14 +287,14 @@
                 $('#description').summernote('code', data.category.description);
                 $('#status').val(data.category.status);
                 if (data.category.image) {
-                    $('#currentImage').html(`<img src="/uploads/category/${data.category.image}" alt="${data.category.name}" class="img-fluid">`);
-                } else {
-                    $('#currentImage').html(`<img src="/uploads/category/default-image.png" alt="No Image" class="img-fluid">`);
-                }
+                    $('#imagePreview').attr('src', '/uploads/category/' + data.category.image).removeClass('hidden');
+                } 
                 $('#submitBtn').text('Update');
                 $('#myExtraLargeModalLabel').text('Edit Category');
                 $('#categoryForm').attr('action', '/categories/' + categoryId);
                 $('#category_id').val(categoryId);
+                $("#imagePreview").addClass("show-image-preview");
+                $("#removeImage").removeClass("hidden");
 
             }
         });
