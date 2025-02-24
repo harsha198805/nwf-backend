@@ -45,5 +45,6 @@
         <link rel="stylesheet" href="{{ URL::to('assets/admin/vendor/summernote/summernote-bs4.css') }}">
         <link rel="stylesheet" href="{{ URL::to('assets\admin\vendor\toaster\toastr.min.css') }}">
         <link rel="stylesheet" href="{{ URL::to('assets\admin\vendor\swetalert\sweetalert2.min.css') }}">
+        <link rel="stylesheet" href="{{ URL::to('assets/admin/vendor/bs-select/bs-select.css') }}">
 
 	</head>

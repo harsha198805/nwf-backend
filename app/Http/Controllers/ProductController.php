@@ -7,7 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductController extends Controller
 {
@@ -15,15 +15,71 @@ class ProductController extends Controller
     {
         $this->middleware('auth');
     }
-    // This method will show products page
-    public function index1() {
-        $products = Product::orderBy('created_at','DESC')->paginate(5);
-
-        return view('products.index',compact('products'))
-                    ->with('i', (request()->input('page', 1) - 1) * 5);
-    }
 
     public function index(Request $request)
+    {
+        $query = Product::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        $products = $query->orderBy('created_at', 'desc')->paginate(10);
+        return view('products.index', compact('products'));
+    }
+    public function getdata(Request $request)
+    {
+        $query = Product::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+        $products = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return response()->json([
+            'products' => $products,
+        ]);
+    }
+
+    public function getCategoryList()
+    {
+        $categories = Category::where('status', 1)
+            ->orderBy('name', 'asc')
+            ->get();
+        return response()->json($categories);
+    }
+
+    public function addNewCategory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'slug' => 'required|unique:categories,slug',
+            'status' => 'required|in:1,0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
+        $category = Category::create([
+            'name' => $request->name,
+            'slug' => $request->slug,
+            'status' => $request->status,
+        ]);
+
+        return response()->json(['success' => 'Category created successfully', 'new_category_id' => $category->id]);
+    }
+    // This method will show products page
+    public function index1()
+    {
+        $products = Product::orderBy('created_at', 'DESC')->paginate(5);
+
+        return view('products.index', compact('products'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
+    }
+
+    public function index111(Request $request)
     {
         // Fetch all categories for the filter
         $categories = Category::all();
@@ -63,8 +119,9 @@ class ProductController extends Controller
     }
 
     // This method will show create product page
-    public function create() {
-        $category = Category::orderBy('name','ASC')->get();
+    public function create()
+    {
+        $category = Category::orderBy('name', 'ASC')->get();
         return view('products.create', compact('category'));
     }
 
@@ -72,20 +129,19 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // Validate the request
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'category_id' => 'required|integer|exists:categories,id',
-
             'slug' => 'required|string|unique:products,slug',
-            'price' => 'required|numeric',
+            'product_price' => 'numeric',
             'sale_price' => 'nullable|numeric',
             'tags' => 'nullable|string',
-            'weight' => 'nullable|numeric',
-            'new_arrivals' => 'nullable|boolean',
-            'featured_products' => 'nullable|boolean',
+            'product_weight' => 'nullable|numeric',
+            'new_arrivals' => 'nullable|boolean',  // accepts true/false or 0/1
+            'featured' => 'nullable|boolean',      // accepts true/false or 0/1
             'short_description' => 'nullable|string',
             'long_description' => 'nullable|string',
-            'image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_1' => 'required|nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -94,35 +150,45 @@ class ProductController extends Controller
             'focus_keywords' => 'nullable|string',
         ]);
 
-        // Handle file uploads
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
+
         $data = $request->all();
         foreach (['image_1', 'image_2', 'image_3', 'image_4'] as $imageField) {
             if ($request->hasFile($imageField)) {
-                $data[$imageField] = $request->file($imageField)->store('products', 'public');
+                $file = $request->file($imageField);
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '_' . mt_rand(100000, 999999) . '.' . $extension;
+                $file->move(public_path('uploads/products'), $filename);
+            } else {
+                $filename = null;
             }
+            $data[$imageField] = $filename;
         }
-
-        $data['slug'] = Str::slug($request->input('name'), '-');
-
-        // Save the product
+        $newArrivals = $request->has('new_arrivals') ? 1 : 0;
+        $featured = $request->has('featured') ? 1 : 0;
+        $data['new_arrivals'] = $newArrivals;
+        $data['featured'] = $featured;
         Product::create($data);
 
         return response()->json(['success' => 'Product created successfully!']);
     }
     // This method will store a product in db
-    public function store11(Request $request) {
+    public function store11(Request $request)
+    {
         $rules = [
             'name' => 'required',
             'category_id' => 'required',
             'price' => 'required|numeric',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',           
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
 
         if ($request->image != "") {
             $rules['image'] = 'image';
         }
 
-        $validator = Validator::make($request->all(),$rules);
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return redirect()->route('products.create')->withInput()->withErrors($validator);
@@ -140,17 +206,17 @@ class ProductController extends Controller
             // here we will store image
             $image = $request->image;
             $ext = $image->getClientOriginalExtension();
-            $imageName = time().'.'.$ext; // Unique image name
+            $imageName = time() . '.' . $ext; // Unique image name
 
             // Save image to products directory
-            $image->move(public_path('uploads/products'),$imageName);
+            $image->move(public_path('uploads/products'), $imageName);
 
             // Save image name in database
             $product->image = $imageName;
             $product->save();
-        }        
+        }
 
-        return redirect()->route('products.index')->with('success','Product added successfully.');
+        return redirect()->route('products.index')->with('success', 'Product added successfully.');
     }
 
     public function show(Product $product)
@@ -159,31 +225,33 @@ class ProductController extends Controller
     }
 
     // This method will show edit product page
-    public function edit($id) {
+    public function edit($id)
+    {
         $product = Product::findOrFail($id);
-        $category = Category::orderBy('name','ASC')->get();
-        return view('products.edit', compact('product','category'));
+        $category = Category::orderBy('name', 'ASC')->get();
+        return view('products.edit', compact('product', 'category'));
     }
 
     // This method will update a product
-    public function update($id, Request $request) {
+    public function update($id, Request $request)
+    {
 
         $product = Product::findOrFail($id);
 
         $rules = [
             'category_id' => 'required',
             'name' => 'required|min:5',
-            'price' => 'required|numeric'            
+            'price' => 'required|numeric'
         ];
 
         if ($request->image != "") {
             $rules['image'] = 'image';
         }
 
-        $validator = Validator::make($request->all(),$rules);
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            return redirect()->route('products.edit',$product->id)->withInput()->withErrors($validator);
+            return redirect()->route('products.edit', $product->id)->withInput()->withErrors($validator);
         }
 
         // here we will update product
@@ -196,34 +264,57 @@ class ProductController extends Controller
         if ($request->image != "") {
 
             // delete old image
-            File::delete(public_path('uploads/products/'.$product->image));
+            File::delete(public_path('uploads/products/' . $product->image));
 
             // here we will store image
             $image = $request->image;
             $ext = $image->getClientOriginalExtension();
-            $imageName = time().'.'.$ext; // Unique image name
+            $imageName = time() . '.' . $ext; // Unique image name
 
             // Save image to products directory
-            $image->move(public_path('uploads/products'),$imageName);
+            $image->move(public_path('uploads/products'), $imageName);
 
             // Save image name in database
             $product->image = $imageName;
             $product->save();
-        }        
+        }
 
-        return redirect()->route('products.index')->with('success','Product updated successfully.');
+        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
-    // This method will delete a product
-    public function destroy($id) {
-        $product = Product::findOrFail($id);
 
-       // delete image
-       File::delete(public_path('uploads/products/'.$product->image));
+    public function destroy($id)
+    {
+        $product = Product::find($id);
 
-       // delete product from database
-       $product->delete();
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
 
-       return redirect()->route('products.index')->with('success','Product deleted successfully.');
+        foreach ([$product->image_1, $product->image_2, $product->image_3, $product->image_4] as $imageField) {
+            if ($imageField && file_exists(public_path('uploads/products/' . $imageField))) {
+                unlink(public_path('uploads/products/' . $imageField));
+            }
+        }
+
+        $product->delete();
+        return response()->json(['success' => 'Product deleted successfully']);
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $product = Product::find($request->id);
+
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+        try {
+            $product->status = $request->status;
+            $product->save();
+
+            return response()->json(['success' => 'Status updated successfully.']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['success' => false, 'message' => 'Product not found']);
+        }
     }
 }

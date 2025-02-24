@@ -8134,7 +8134,15 @@ code {
 }
 
 .pagination_admin button.active {
-  background-color: #007bff !important; /* Use !important to override Bootstrap */
+  background-color: #007bff !important;
   color: #fff !important;
   pointer-events: none;
+}
+
+span.error-text::first-letter {
+  text-transform: uppercase;
+}
+.modal-scrolls{
+  max-height: 100vh;
+  overflow-y: auto;
 }

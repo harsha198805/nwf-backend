@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id'); 
             $table->string('name');
             $table->string('slug')->unique();
-            $table->decimal('product_price', 10, 2);
+            $table->decimal('product_price', 10, 2)->nullable();
             $table->decimal('sale_price', 10, 2)->nullable();
             $table->string('tags')->nullable(); // Tags can be comma-separated strings
             $table->decimal('product_weight', 8, 2)->nullable();
@@ -33,7 +33,6 @@ return new class extends Migration
             $table->text('meta_description')->nullable();
             $table->string('focus_keywords')->nullable();
             $table->timestamps();
-
         });
     }
 

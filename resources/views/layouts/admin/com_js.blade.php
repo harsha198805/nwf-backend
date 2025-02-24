@@ -54,6 +54,7 @@
         <script src="{{ URL::to('assets/admin/vendor/summernote/summernote-bs4.js') }}"></script>
         <script src="{{ URL::to('assets\admin\vendor\toaster\toastr.min.js') }}"></script>
         <script src="{{ URL::to('assets\admin\vendor\swetalert\sweetalert2.min.js') }}"></script>
+        <script src="{{ URL::to('assets\admin\vendor\bs-select\bs-select.min.js') }}"></script>
 		<script>
 			$(document).ready(function() {
 				$('.summernote').summernote({

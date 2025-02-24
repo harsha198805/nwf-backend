@@ -66,7 +66,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body modal-scrolls">
                 <section>
                     <form id="categoryForm">
                         @csrf
@@ -76,21 +76,21 @@
                                 <div class="form-group">
                                     <label for="name">Category Name</label>
                                     <input type="text" class="form-control" id="name" name="name" placeholder="">
-                                    <span class="text-danger" id="nameError"></span>
+                                    <span class="error-text text-danger" id="nameError"></span>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-12">
                                 <div class="form-group">
                                     <label for="slug">Slug</label>
                                     <input type="text" class="form-control" id="slug" name="slug" placeholder="" readonly>
-                                    <span class="text-danger" id="slugError"></span>
+                                    <span class="error-text text-danger" id="slugError"></span>
                                 </div>
                             </div>
                             <div class="col-xl-12 col-12">
                                 <div class="form-group">
                                     <label for="description">Description</label>
                                     <textarea class="form-control summernote" id="description" name="description"></textarea>
-                                    <span class="text-danger" id="descriptionError"></span>
+                                    <span class="error-text text-danger" id="descriptionError"></span>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -98,11 +98,11 @@
                                     <label for="image">Add Image</label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="inputGroupFile02" name="image">
-                                            <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                            <input type="file" class="custom-file-input" id="category_image" name="image">
+                                            <label class="custom-file-label" for="category_image">Choose file</label>
                                         </div>
                                     </div>
-                                    <span class="text-danger" id="imageError"></span>
+                                    <span class="error-text text-danger" id="imageError"></span>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -120,7 +120,7 @@
                                         <option value="1">Active</option>
                                         <option value="0">Inactive</option>
                                     </select>
-                                    <span class="text-danger" id="statusError"></span>
+                                    <span class="error-text text-danger" id="statusError"></span>
                                 </div>
                             </div>
                         </div>
@@ -193,6 +193,21 @@
                         toastr.success('Category ' + msg_res + ' successfully');
                         fetchCategories();
                     }
+
+                    let firstErrorField = $('.error-text').filter(function() {
+                            return $(this).text().trim() !== '';
+                        }).first();
+
+                        if (firstErrorField.length) {
+                            let errorFieldId = firstErrorField.attr('id').replace('Error', '');
+                            let errorField = $('#' + errorFieldId);
+                            let modalBody = $('.modal-body');
+                            let errorOffsetTop = errorField.offset().top;
+
+                            modalBody.animate({
+                                scrollTop: errorOffsetTop - 150 - modalBody.offset().top + modalBody.scrollTop()
+                            }, 500);
+                        }
                 },
                 error: function(response) {
                     toastr.error('Failed to create category');
@@ -352,7 +367,7 @@
     function toggleStatus(categoryId, status) {
         $.ajax({
             url: '/categories/update-status',
-            method: 'PUT',
+            method: 'put',
             data: {
                 id: categoryId,
                 status: status ? 1 : 0,
@@ -370,7 +385,7 @@
             }
         });
     }
-    $("#inputGroupFile02").change(function(event) {
+    $("#category_image").change(function(event) {
         let file = event.target.files[0];
         if (file) {
             let reader = new FileReader();
@@ -383,7 +398,7 @@
     });
 
     $("#removeImage").click(function() {
-        $("#inputGroupFile02").val("");
+        $("#category_image").val("");
         $("#imagePreview").attr("src", "").removeClass("show-image-preview");
         $("#removeImage").addClass("hidden");
     });
