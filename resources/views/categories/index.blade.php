@@ -339,7 +339,7 @@
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(data) {
-                        toastr.success('Category deleted successfully');
+                        toastr.success(data.success);
                         fetchCategories();
                     }
                 });

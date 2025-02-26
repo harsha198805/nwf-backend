@@ -6,71 +6,49 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Services\CategoryService;
 
 class CategoryController extends Controller
 {
-    public function __construct()
+    protected $categoryService;
+    protected $paginationLimit = 10;
+
+    public function __construct(CategoryService $categoryService)
     {
         $this->middleware('auth');
+        $this->categoryService = $categoryService;
     }
 
     public function index(Request $request)
     {
-        $query = Category::query();
+        $search = $request->input('search');
+        $paginate = 10;
+        $categories = $this->categoryService->getAllCategories($search, $this->paginationLimit);
 
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where('name', 'like', '%' . $search . '%');
-        }
-
-        $categories = $query->orderBy('created_at', 'desc')->paginate(10);
         return view('categories.index', compact('categories'));
     }
+
     public function getdata(Request $request)
     {
-        $query = Category::query();
+        $search = $request->input('search');
+        $categories = $this->categoryService->getAllCategories($search, $this->paginationLimit);
 
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where('name', 'like', '%' . $search . '%');
-        }
-        $categories = $query->orderBy('created_at', 'desc')->paginate(10);
-
-        return response()->json([
-            'categories' => $categories,
-        ]);
+        return response()->json(['categories' => $categories]);
     }
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
-            'slug' => 'required|unique:categories,slug',
-            'description' => 'nullable',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:1,0',
-        ]);
+        $validationErrors = $this->categoryService->validateCategory($request->all());
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
+        if ($validationErrors) {
+            return response()->json(['errors' => $validationErrors]);
         }
 
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $fileName = time() . '_' . mt_rand(100000, 999999) . '.' . $extension;
-            $file->move(public_path('uploads/category'), $fileName);
-        } else {
-            $fileName = null;
-        }
+        $fileName = $this->handleFileUpload($request);
 
-        $category = Category::create([
-            'name' => $request->name,
-            'slug' => $request->slug,
-            'description' => $request->description,
-            'image' => $fileName,
-            'status' => $request->status,
-        ]);
+        $data = $request->all();
+        $data['image'] = $fileName;
+        $this->categoryService->createCategory($data);
 
         return response()->json(['success' => 'Category created successfully']);
     }
@@ -89,78 +67,69 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
+        $validationErrors = $this->categoryService->validateCategory($request->all(), $id);
 
-        $category = Category::findOrFail($id);
-
-        if (!$category) {
-            return response()->json(['error' => 'Category not found'], 404);
+        if ($validationErrors) {
+            return response()->json(['errors' => $validationErrors]);
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
-            'slug' => 'required|unique:categories,slug,' . $category->id,
-            'description' => 'nullable',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:1,0',
-        ]);
+        $fileName = $this->handleFileUpload($request);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
-        }
-
-        if ($request->hasFile('image')) {
-            if ($category->image && file_exists(public_path('uploads/category/' . $category->image))) {
-                unlink(public_path('uploads/category/' . $category->image));
-            }
-
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $fileName = time() . '_' . mt_rand(100000, 999999) . '.' . $extension;
-            $file->move(public_path('uploads/category'), $fileName);
-        } else {
-            $fileName = $category->image;
-        }
-
-        $category->update([
-            'name' => $request->name,
-            'slug' => $request->slug,
-            'description' => $request->description,
-            'image' => $fileName,
-            'status' => $request->status,
-        ]);
+        $data = $request->all();
+        $data['image'] = $fileName;
+        $this->categoryService->updateCategory($id, $data);
 
         return response()->json(['success' => 'Category updated successfully']);
     }
 
     public function destroy($id)
     {
-        $category = Category::find($id);
 
-        if (!$category) {
-            return response()->json(['error' => 'Category not found'], 404);
+        $isCategoryUsedInProducts = $this->categoryService->isCategoryUsedInProducts($id);
+        if ($isCategoryUsedInProducts) {
+            $attributes = ['id' => $id];
+            $data = ['status' => 0];
+            $result = $this->categoryService->updateStatus($attributes, $data);
+            return response()->json(['success' => "Category is used in Product.\n Category is Inactive"]);
+        } else {
+            $category = $this->categoryService->findCategoryById($id);
+
+            $deleteCategory = $this->categoryService->deleteCategory($id);
+            if ($deleteCategory) {
+                if ($category->image && file_exists(public_path('uploads/category/' . $category->image))) {
+                    unlink(public_path('uploads/category/' . $category->image));
+                }
+            }
+
+            return response()->json(['success' => 'Category deleted successfully']);
         }
-
-        if ($category->image && file_exists(public_path('uploads/category/' . $category->image))) {
-            unlink(public_path('uploads/category/' . $category->image));
-        }
-
-        $category->delete();
-        return response()->json(['success' => 'Category deleted successfully']);
     }
 
     public function updateStatus(Request $request)
     {
-        $category = Category::find($request->id);
-        if (!$category) {
-            return response()->json(['error' => 'Category not found'], 404);
-        }
-        try {
-            $category->status = $request->status;
-            $category->save();
+        $this->validate($request, [
+            'status' => 'required|in:1,0',
+        ]);
 
-            return response()->json(['success' => 'Status updated successfully.']);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['success' => false, 'message' => 'Category not found']);
+        $attributes = ['id' => $request->id];
+        $data = ['status' => $request->status];
+        $result = $this->categoryService->updateStatus($attributes, $data);
+        if (!$result) {
+            return response()->json(['error' => 'Failed to update category status'], 500);
         }
+
+        return response()->json(['success' => 'Status updated successfully']);
+    }
+
+    private function handleFileUpload(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . mt_rand(100000, 999999) . '.' . $extension;
+            $file->move(public_path('uploads/category'), $fileName);
+            return $fileName;
+        }
+        return null;
     }
 }
