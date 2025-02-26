@@ -21,6 +21,7 @@
                         <div class="custom-search">
                             <input type="text" id="category_search" name="search" class="search-query" placeholder="Search Here..." value="">
                             <button type="button" id="category_search_btn" class="btn-light"><i class="icon-search1"></i></button>
+                            <span id="clearSearch" class="clear-icon">&times;</span>
                         </div>
                     </div>
                 </div>
@@ -57,7 +58,7 @@
 </div>
 <!-- Row end -->
 <!-- customer add Modal start  -->
-<div class="modal fade product-add" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+<div class="modal fade product-add" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -109,7 +110,6 @@
                                 <div id="imagePreviewContainer" style="margin-top: 10px;">
                                     <label class="pro-image-delete"><span id="removeImage" class="icon-delete hidden"></span></label>
                                     <img id="imagePreview" class="imagePreview image-preview hidden" src="" alt="Image Preview">
-
                                 </div>
                             </div>
 
@@ -171,7 +171,7 @@
 
             let categoryId = $('#category_id').val();
             let url = categoryId ? '/categories/' + categoryId : '/categories';
-            let method = categoryId ? 'POST' : 'POST';
+            let method = categoryId ? 'post' : 'POST';
             let msg_res = categoryId ? 'edited' : 'created';
 
             $.ajax({
@@ -195,19 +195,19 @@
                     }
 
                     let firstErrorField = $('.error-text').filter(function() {
-                            return $(this).text().trim() !== '';
-                        }).first();
+                        return $(this).text().trim() !== '';
+                    }).first();
 
-                        if (firstErrorField.length) {
-                            let errorFieldId = firstErrorField.attr('id').replace('Error', '');
-                            let errorField = $('#' + errorFieldId);
-                            let modalBody = $('.modal-body');
-                            let errorOffsetTop = errorField.offset().top;
+                    if (firstErrorField.length) {
+                        let errorFieldId = firstErrorField.attr('id').replace('Error', '');
+                        let errorField = $('#' + errorFieldId);
+                        let modalBody = $('.modal-body');
+                        let errorOffsetTop = errorField.offset().top;
 
-                            modalBody.animate({
-                                scrollTop: errorOffsetTop - 150 - modalBody.offset().top + modalBody.scrollTop()
-                            }, 500);
-                        }
+                        modalBody.animate({
+                            scrollTop: errorOffsetTop - 150 - modalBody.offset().top + modalBody.scrollTop()
+                        }, 500);
+                    }
                 },
                 error: function(response) {
                     toastr.error('Failed to create category');
@@ -215,18 +215,46 @@
             });
         });
 
-
         $('.summernote').summernote({
             height: 200,
         });
     });
 
     $('#add_btn').on('click', function(e) {
+        $('#submitBtn').text('Add');
+        $('#myExtraLargeModalLabel').text('Add Category');
+        modalScrollTop();
+        $('.error-text').text('');
         $('#categoryForm')[0].reset();
+        $('#category_id').val('');
         $('#description').summernote('code', '');
         $("#imagePreview").attr("src", "").removeClass("show-image-preview");
         $("#removeImage").addClass("hidden");
     });
+
+    function editCategory(categoryId) {
+        $('.error-text').text('');
+        modalScrollTop();
+        $.ajax({
+            url: '/categories/' + 'edit/' + categoryId,
+            method: 'GET',
+            success: function(data) {
+                $('#name').val(data.category.name);
+                $('#slug').val(data.category.slug);
+                $('#description').summernote('code', data.category.description);
+                $('#status').val(data.category.status);
+                if (data.category.image != null) {
+                    $('#imagePreview').attr('src', '/uploads/category/' + data.category.image).removeClass('hidden');
+                    $("#imagePreview").addClass("show-image-preview");
+                    $("#removeImage").removeClass("hidden");
+                }
+                $('#submitBtn').text('Update');
+                $('#myExtraLargeModalLabel').text('Edit Category');
+                $('#categoryForm').attr('action', '/categories/' + categoryId);
+                $('#category_id').val(categoryId);
+            }
+        });
+    }
 
     function fetchCategories(page = 1) {
         const search = $('#category_search').val();
@@ -242,7 +270,7 @@
                     const formattedDate = formatDate(category.created_at);
                     categoryList += `
                 <tr>
-                    <td><img src="/uploads/category/${category.image || 'default-image.png'}" class="pro-img" alt="${category.name}"></td>
+                    <td><img src="${category.image != null ? '/uploads/category/' + category.image : '/assets/admin/img/default_image.jpg'}" class="pro-img" alt="${category.name}"></td>
                     <td>${category.name}</td>
                     <td>${formattedDate}</td>
                     <td>Admin</td>
@@ -292,29 +320,6 @@
         });
     }
 
-    function editCategory(categoryId) {
-        $.ajax({
-            url: '/categories/' + 'edit/' + categoryId,
-            method: 'GET',
-            success: function(data) {
-                $('#name').val(data.category.name);
-                $('#slug').val(data.category.slug);
-                $('#description').summernote('code', data.category.description);
-                $('#status').val(data.category.status);
-                if (data.category.image) {
-                    $('#imagePreview').attr('src', '/uploads/category/' + data.category.image).removeClass('hidden');
-                } 
-                $('#submitBtn').text('Update');
-                $('#myExtraLargeModalLabel').text('Edit Category');
-                $('#categoryForm').attr('action', '/categories/' + categoryId);
-                $('#category_id').val(categoryId);
-                $("#imagePreview").addClass("show-image-preview");
-                $("#removeImage").removeClass("hidden");
-
-            }
-        });
-    }
-
     function deleteCategory(categoryId) {
 
         Swal.fire({
@@ -338,12 +343,15 @@
                         fetchCategories();
                     }
                 });
-                // }
             }
         });
     }
     $('#category_search_btn').on('click', function(e) {
         e.preventDefault();
+        fetchCategories();
+    });
+
+    $('#category_search').on('keyup', function() {
         fetchCategories();
     });
 
@@ -367,7 +375,7 @@
     function toggleStatus(categoryId, status) {
         $.ajax({
             url: '/categories/update-status',
-            method: 'put',
+            method: 'patch',
             data: {
                 id: categoryId,
                 status: status ? 1 : 0,
@@ -402,5 +410,31 @@
         $("#imagePreview").attr("src", "").removeClass("show-image-preview");
         $("#removeImage").addClass("hidden");
     });
+
+    function modalScrollTop() {
+        let modalBody = $('.modal-body');
+        modalBody.animate({
+            scrollTop: modalBody.offset().top + modalBody.scrollTop()
+        }, 500);
+    }
+    $('#categoryModal').on('hidden.bs.modal', function() {
+        $('#categoryForm')[0].reset();
+        $('#category_id').val('');
+    });
+
+    $('#category_search').on('input', function() {
+        if ($(this).val()) {
+            $('#clearSearch').show();
+        } else {
+            $('#clearSearch').hide();
+        }
+    });
+
+    $('#clearSearch').on('click', function() {
+        $('#category_search').val('').focus();
+        $(this).hide();
+        fetchCategories();
+    });
+
 </script>
 @endpush

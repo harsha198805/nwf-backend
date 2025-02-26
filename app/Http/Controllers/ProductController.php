@@ -133,7 +133,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|integer|exists:categories,id',
             'slug' => 'required|string|unique:products,slug',
-            'product_price' => 'numeric',
+            'product_price' => 'nullable|numeric',
             'sale_price' => 'nullable|numeric',
             'tags' => 'nullable|string',
             'product_weight' => 'nullable|numeric',
@@ -174,119 +174,87 @@ class ProductController extends Controller
 
         return response()->json(['success' => 'Product created successfully!']);
     }
-    // This method will store a product in db
-    public function store11(Request $request)
-    {
-        $rules = [
-            'name' => 'required',
-            'category_id' => 'required',
-            'price' => 'required|numeric',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ];
 
-        if ($request->image != "") {
-            $rules['image'] = 'image';
-        }
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return redirect()->route('products.create')->withInput()->withErrors($validator);
-        }
-
-        // here we will insert product in db
-        $product = new Product();
-        $product->category_id = $request->category_id;
-        $product->name = $request->name;
-        $product->price = $request->price;
-        $product->description = $request->description;
-        $product->save();
-
-        if ($request->image != "") {
-            // here we will store image
-            $image = $request->image;
-            $ext = $image->getClientOriginalExtension();
-            $imageName = time() . '.' . $ext; // Unique image name
-
-            // Save image to products directory
-            $image->move(public_path('uploads/products'), $imageName);
-
-            // Save image name in database
-            $product->image = $imageName;
-            $product->save();
-        }
-
-        return redirect()->route('products.index')->with('success', 'Product added successfully.');
-    }
-
-    public function show(Product $product)
-    {
-        return view('products.show', compact('product'));
-    }
-
-    // This method will show edit product page
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
-        $category = Category::orderBy('name', 'ASC')->get();
-        return view('products.edit', compact('product', 'category'));
+        $product = Product::find($id);
+
+        if ($product) {
+            return response()->json(['product' => $product]);
+        }
+
+        return response()->json(['error' => 'Product not found'], 404);
     }
 
-    // This method will update a product
-    public function update($id, Request $request)
+
+    public function update(Request $request, $id)
     {
 
         $product = Product::findOrFail($id);
-
-        $rules = [
-            'category_id' => 'required',
-            'name' => 'required|min:5',
-            'price' => 'required|numeric'
-        ];
-
-        if ($request->image != "") {
-            $rules['image'] = 'image';
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
         }
-
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|integer|exists:categories,id',
+            'slug' => 'required|string|unique:products,slug,' . $product->id,
+            'product_price' => 'nullable|numeric',
+            'sale_price' => 'nullable|numeric',
+            'tags' => 'nullable|string',
+            'product_weight' => 'nullable|numeric',
+            'new_arrivals' => 'nullable|boolean',  // accepts true/false or 0/1
+            'featured' => 'nullable|boolean',      // accepts true/false or 0/1
+            'short_description' => 'nullable|string',
+            'long_description' => 'nullable|string',
+            'image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'meta_title' => 'nullable|string',
+            'meta_description' => 'nullable|string',
+            'focus_keywords' => 'nullable|string',
+        ]);
 
         if ($validator->fails()) {
-            return redirect()->route('products.edit', $product->id)->withInput()->withErrors($validator);
+            return response()->json(['errors' => $validator->errors()]);
         }
 
-        // here we will update product
-        $product->category_id = $request->category_id;
-        $product->name = $request->name;
-        $product->price = $request->price;
-        $product->description = $request->description;
-        $product->save();
-
-        if ($request->image != "") {
-
-            // delete old image
-            File::delete(public_path('uploads/products/' . $product->image));
-
-            // here we will store image
-            $image = $request->image;
-            $ext = $image->getClientOriginalExtension();
-            $imageName = time() . '.' . $ext; // Unique image name
-
-            // Save image to products directory
-            $image->move(public_path('uploads/products'), $imageName);
-
-            // Save image name in database
-            $product->image = $imageName;
-            $product->save();
+        foreach ([$product->image_1, $product->image_2, $product->image_3, $product->image_4] as $imageField) {
+            if ($imageField && file_exists(public_path('uploads/products/' . $imageField))) {
+                unlink(public_path('uploads/products/' . $imageField));
+            }
         }
 
-        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+        $data = $request->all();
+        $imageFields = ['image_1', 'image_2', 'image_3', 'image_4'];
+
+        foreach ($imageFields as $imageField) {
+            if ($request->hasFile($imageField)) {
+                if ($product->$imageField && file_exists(public_path('uploads/products/' . $product->$imageField))) {
+                    unlink(public_path('uploads/products/' . $product->$imageField));
+                }
+
+                $file = $request->file($imageField);
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '_' . mt_rand(100000, 999999) . '.' . $extension;
+                $file->move(public_path('uploads/products'), $filename);
+                $data[$imageField] = $filename;
+            } else {
+                $data[$imageField] = $product->$imageField;
+            }
+        }
+        $newArrivals = $request->has('new_arrivals') ? 1 : 0;
+        $featured = $request->has('featured') ? 1 : 0;
+        $data['new_arrivals'] = $newArrivals;
+        $data['featured'] = $featured;
+        $product->update($data);
+
+        return response()->json(['success' => 'Product created successfully!']);
     }
-
 
     public function destroy($id)
     {
         $product = Product::find($id);
-
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
@@ -304,14 +272,12 @@ class ProductController extends Controller
     public function updateStatus(Request $request)
     {
         $product = Product::find($request->id);
-
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
         try {
             $product->status = $request->status;
             $product->save();
-
             return response()->json(['success' => 'Status updated successfully.']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['success' => false, 'message' => 'Product not found']);

@@ -22,6 +22,7 @@
                             <form method="GET" action="">
                                 <input type="text" id="product_search" name="search" class="search-query" placeholder="Search Here..." value="">
                                 <button type="button" id="product_search_btn" class="btn-light"><i class="icon-search1"></i></button>
+                                <span id="clearSearch" class="clear-icon">&times;</span>
                             </form>
                         </div>
                     </div>
@@ -118,7 +119,7 @@
                             <div class="col-xl-6 col-12">
                                 <div class="form-group">
                                     <label for="tags">Tags</label>
-                                    <input type="text" class="form-control" id="tags" name="tags" value="Test, Sri Lanka" data-role="tagsinput">
+                                    <input type="text" class="form-control" id="tags" name="tags" value="" data-role="tagsinput" placeholder="type and press enter">
                                     <span class="error-text text-danger" id="tagsError"></span>
                                 </div>
                             </div>
@@ -159,54 +160,69 @@
                             </div>
                             <div class="col-xl-6 col-12">
                                 <div class="form-group">
-                                    <label for="name">Product Image 1</label>
-                                    <label class="pro-image-delete"><span class="icon-delete"></span></label>
+                                    <label for="image_1">Product Image 1</label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="image_1" id="image_1">
-                                            <label class="custom-file-label" for="image_1" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                                            <input type="file" class="custom-file-input" name="image_1" id="image_1" onchange="previewImage(this, 'imagePreview_1', 'removeImage_1')">
+                                            <label class="custom-file-label" for="image_1">Choose file</label>
                                         </div>
                                     </div>
                                     <span class="error-text text-danger" id="image_1Error"></span>
                                 </div>
+                                <div id="imagePreviewContainer_1" style="margin-top: 10px;">
+                                    <label class="pro-image-delete"><span id="removeImage_1" class="icon-delete hidden" onclick="removeImage('image_1', 'imagePreview_1', 'removeImage_1')"></span></label>
+                                    <img id="imagePreview_1" class="imagePreview hidden" src="" alt="Image Preview">
+                                </div>
                             </div>
+
                             <div class="col-xl-6 col-12">
                                 <div class="form-group">
-                                    <label for="name">Product Image 2</label>
-                                    <label class="pro-image-delete"><span class="icon-delete"></span></label>
+                                    <label for="image_2">Product Image 2</label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="image_2" id="image_2">
-                                            <label class="custom-file-label" for="image_2" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                                            <input type="file" class="custom-file-input" name="image_2" id="image_2" onchange="previewImage(this, 'imagePreview_2', 'removeImage_2')">
+                                            <label class="custom-file-label" for="image_2">Choose file</label>
                                         </div>
                                     </div>
                                     <span class="error-text text-danger" id="image_2Error"></span>
                                 </div>
+                                <div id="imagePreviewContainer_2" style="margin-top: 10px;">
+                                    <label class="pro-image-delete"><span id="removeImage_2" class="icon-delete hidden" onclick="removeImage('image_2', 'imagePreview_2', 'removeImage_2')"></span></label>
+                                    <img id="imagePreview_2" class="imagePreview hidden" src="" alt="Image Preview">
+                                </div>
                             </div>
+
                             <div class="col-xl-6 col-12">
                                 <div class="form-group">
-                                    <label for="name">Product Image 3</label>
-                                    <label class="pro-image-delete"><span class="icon-delete"></span></label>
+                                    <label for="image_3">Product Image 3</label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="image_3" id="image_3">
-                                            <label class="custom-file-label" for="image_3" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                                            <input type="file" class="custom-file-input" name="image_3" id="image_3" onchange="previewImage(this, 'imagePreview_3', 'removeImage_3')">
+                                            <label class="custom-file-label" for="image_3">Choose file</label>
                                         </div>
                                     </div>
                                     <span class="error-text text-danger" id="image_3Error"></span>
                                 </div>
+                                <div id="imagePreviewContainer_3" style="margin-top: 10px;">
+                                    <label class="pro-image-delete"><span id="removeImage_3" class="icon-delete hidden" onclick="removeImage('image_3', 'imagePreview_3', 'removeImage_3')"></span></label>
+                                    <img id="imagePreview_3" class="imagePreview hidden" src="" alt="Image Preview">
+                                </div>
                             </div>
+
                             <div class="col-xl-6 col-12">
                                 <div class="form-group">
-                                    <label for="name">Product Image 4</label>
-                                    <label class="pro-image-delete"><span class="icon-delete"></span></label>
+                                    <label for="image_4">Product Image 4</label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="image_4" id="image_4">
-                                            <label class="custom-file-label" for="image_4" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                                            <input type="file" class="custom-file-input" name="image_4" id="image_4" onchange="previewImage(this, 'imagePreview_4', 'removeImage_4')">
+                                            <label class="custom-file-label" for="image_4">Choose file</label>
                                         </div>
                                     </div>
                                     <span class="error-text text-danger" id="image_4Error"></span>
+                                </div>
+                                <div id="imagePreviewContainer_4" style="margin-top: 10px;">
+                                    <label class="pro-image-delete"><span id="removeImage_4" class="icon-delete hidden" onclick="removeImage('image_4', 'imagePreview_4', 'removeImage_4')"></span></label>
+                                    <img id="imagePreview_4" class="imagePreview hidden" src="" alt="Image Preview">
                                 </div>
                             </div>
 
@@ -243,7 +259,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-info">Add</button>
+                            <button type="submit" class="btn btn-info" id="submitBtn">Add</button>
                         </div>
                     </section>
             </div>
@@ -256,29 +272,7 @@
 
 @push('scripts')
 <script type="text/javascript">
-    function getCategorylist() {
-        fetch('/category_list')
-            .then(response => response.json())
-            .then(data => {
-                let categoryList = document.getElementById('category_id');
-                let defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.text = 'Select One';
-                categoryList.appendChild(defaultOption);
-                data.forEach(category => {
-                    let option = document.createElement('option');
-                    option.value = category.id;
-                    option.text = category.name;
-                    categoryList.appendChild(option);
-                });
-                $('.selectpicker').selectpicker('refresh');
-            })
-            .catch(error => console.error('Error loading categories:', error));
-
-    };
-
     $(document).ready(function() {
-        ;
         $('.selectpicker').selectpicker();
         $(document).on('keyup', '.bs-searchbox input', function(e) {
             if (e.which === 13) {
@@ -301,6 +295,13 @@
                                 _token: $('meta[name="csrf-token"]').attr('content')
                             },
                             success: function(response) {
+                                if (response.errors) {
+                                    for (let field in response.errors) {
+                                        if (response.errors.hasOwnProperty(field)) {
+                                            toastr.error( response.errors[field][0].charAt(0).toUpperCase() + response.errors[field][0].slice(1) + '\n Category may be Inactive');
+                                        }
+                                    }
+                                }
                                 if (response.success && response.new_category_id > 0) {
                                     let categoryList = document.getElementById('category_id');
                                     categoryList.innerHTML = '';
@@ -345,21 +346,16 @@
 
         $('#productForm').on('submit', function(e) {
             e.preventDefault();
+            $('.error-text').text('');
 
-            // Clear previous errors
-            $('.error-text').text(''); // Assuming you add the class 'error-text' to all your error display elements
-
-            // Prepare form data
             let formElement = document.getElementById('productForm');
             let formData = new FormData(formElement);
 
-            // Get product ID (if editing)
             let productId = $('#product_id').val();
             let url = productId ? '/products/' + productId : '/products';
-            let method = productId ? 'PUT' : 'POST'; // Changed method to PUT for updating
+            let method = productId ? 'post' : 'POST';
             let msg_res = productId ? 'edited' : 'created';
 
-            // Perform the AJAX request
             $.ajax({
                 url: url,
                 type: method,
@@ -367,18 +363,14 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    // Handle errors if any
                     if (response.errors) {
-                        // Loop through all errors and display them dynamically
                         for (let field in response.errors) {
                             if (response.errors.hasOwnProperty(field)) {
-                                // $('#' + field + 'Error').text(response.errors[field][0]); // Field-specific error
                                 $('#' + field + 'Error').html(
                                     response.errors[field][0].charAt(0).toUpperCase() + response.errors[field][0].slice(1)
                                 );
                             }
                         }
-
                         let firstErrorField = $('.error-text').filter(function() {
                             return $(this).text().trim() !== '';
                         }).first();
@@ -394,51 +386,6 @@
                             }, 500);
                         }
                     } else {
-                        // Reset form, close modal, and show success message
-                        $('#productForm')[0].reset();
-                        $('.product-add').modal('hide');
-                        toastr.success('Product ' + msg_res + ' successfully');
-                        fetchProducts(); // Refresh product list
-                    }
-                },
-                error: function(response) {
-                    // Handle server errors
-                    toastr.error('Failed to create product');
-                }
-            });
-        });
-        $('#productForm111').on('submit', function(e) {
-            e.preventDefault();
-            $('#categoryIdError').text('');
-            $('#nameError').text('');
-            $('#slugError').text('');
-            $('#descriptionError').text('');
-            $('#imageError').text('');
-            $('#statusError').text('');
-
-            let formElement = document.getElementById('productForm');
-            let formData = new FormData(formElement);
-
-            let productId = $('#product_id').val();
-            let url = productId ? '/products/' + productId : '/products';
-            let method = productId ? 'POST' : 'POST';
-            let msg_res = productId ? 'edited' : 'created';
-
-            $.ajax({
-                url: url,
-                type: method,
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    if (response.errors) {
-                        $('#categoryIdError').text(response.errors.category_id);
-                        $('#nameError').text(response.errors.name);
-                        $('#slugError').text(response.errors.slug);
-                        $('#descriptionError').text(response.errors.description);
-                        $('#imageError').text(response.errors.image);
-                        $('#statusError').text(response.errors.status);
-                    } else {
                         $('#productForm')[0].reset();
                         $('.product-add').modal('hide');
                         toastr.success('Product ' + msg_res + ' successfully');
@@ -451,20 +398,131 @@
             });
         });
 
-
         $('.summernote').summernote({
             height: 200,
         });
+
+        $('#tags').tagsinput({
+            maxTags: 5,
+            trimValue: true,
+        });
+
+        $('#tags').on('blur', function() {
+            if ($(this).val() === '') {
+                $(this).attr('placeholder', 'Type and press enter');
+            }
+        });
+
+        $('#tags').on('focus', function() {
+            $(this).attr('placeholder', '');
+        });
+
+        $('#tags').on('itemAdded', function(event) {
+            var tagCount = $('#tags').tagsinput('items').length;
+            if (tagCount > 20) {
+                $('#tags').tagsinput('remove', event.item);
+                $('#tagsError').text('You can only add up to 20 tags.');
+
+            }
+            setTimeout(() => {
+                $('#tagsError').text('');
+            }, 4000);
+        });
+
     });
 
     $('#add_btn').on('click', function(e) {
-        // $('#productyForm')[0].reset();
-        $('#description').summernote('code', '');
-        $("#imagePreview").attr("src", "").removeClass("show-image-preview");
-        $("#removeImage").addClass("hidden");
+        modalScrollTop();
+        $('#submitBtn').text('Add');
+        $('#myExtraLargeModalLabel').text('Add Product');
+        $('.error-text').text('');
+        $('#productForm')[0].reset();
+        $('#short_description').summernote('code', '');
+        $('#long_description').summernote('code', '');
+        $("#imagePreview_1,#imagePreview_2,#imagePreview_3,#imagePreview_4").attr("src", "").removeClass("show-image-preview");
+        $("#removeImage_1,#removeImage_2,#removeImage_3,#removeImage_4").addClass("hidden");
         getCategorylist();
 
     });
+
+    function editProduct(productId) {
+        modalScrollTop();
+        getCategorylist();
+        $('.error-text').text('');
+        $.ajax({
+            url: '/products/' + 'edit/' + productId,
+            method: 'GET',
+            success: function(data) {
+                $('#category_id').val(data.product.category_id).trigger('change');
+                $('#name').val(data.product.name);
+                $('#slug').val(data.product.slug);
+                $('#product_price').val(data.product.product_price);
+                $('#sale_price').val(data.product.sale_price);
+                $('#tags').val(data.product.tags);
+                $('#product_weight').val(data.product.product_weight);
+                $('#short_description').summernote('code', data.product.short_description);
+                $('#long_description').summernote('code', data.product.long_description);
+                $('#status').val(data.product.status);
+                $('#meta_title').val(data.product.meta_title);
+                $('#meta_description').val(data.product.meta_description);
+                $('#focus_keywords').val(data.product.focus_keywords);
+                if (data.product.image_1 != null) {
+                    $('#imagePreview_1').attr('src', '/uploads/products/' + data.product.image_1).removeClass('hidden');
+                    $("#imagePreview_1").addClass("show-image-preview");
+                    $("#removeImage_1").removeClass("hidden");
+                }
+                if (data.product.image_2 != null) {
+                    $('#imagePreview_2').attr('src', '/uploads/products/' + data.product.image_2).removeClass('hidden');
+                    $("#imagePreview_2").addClass("show-image-preview");
+                    $("#removeImage_2").removeClass("hidden");
+                }
+                if (data.product.image_3 != null) {
+                    $('#imagePreview_3').attr('src', '/uploads/products/' + data.product.image_3).removeClass('hidden');
+                    $("#imagePreview_3").addClass("show-image-preview");
+                    $("#removeImage_3").removeClass("hidden");
+                }
+                if (data.product.image_4 != null) {
+                    $('#imagePreview_4').attr('src', '/uploads/products/' + data.product.image_4).removeClass('hidden');
+                    $("#imagePreview_4").addClass("show-image-preview");
+                    $("#removeImage_4").removeClass("hidden");
+                }
+                $('#new_arrivals').prop('checked', false);
+                if (data.product.new_arrivals) {
+                    $('#new_arrivals').prop('checked', true);
+                }
+                $('#featured').prop('checked', false);
+                if (data.product.featured) {
+                    $('#featured').prop('checked', true);
+                }
+                $('#submitBtn').text('Update');
+                $('#myExtraLargeModalLabel').text('Edit Product');
+                $('#productForm').attr('action', '/products/' + productId);
+                $('#product_id').val(productId);
+
+            }
+        });
+    }
+
+    function getCategorylist() {
+        fetch('/category_list')
+            .then(response => response.json())
+            .then(data => {
+                let categoryList = document.getElementById('category_id');
+                let defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = 'Select One';
+                categoryList.appendChild(defaultOption);
+                data.forEach(category => {
+                    let option = document.createElement('option');
+                    option.value = category.id;
+                    option.text = category.name;
+                    categoryList.appendChild(option);
+                });
+                $('.selectpicker').selectpicker('refresh');
+            })
+            .catch(error => console.error('Error loading categories:', error));
+
+    };
 
     function fetchProducts(page = 1) {
         const search = $('#product_search').val();
@@ -480,7 +538,7 @@
                     const formattedDate = formatDate(product.created_at);
                     productList += `
                 <tr>
-                    <td><img src="/uploads/products/${product.image_1 || 'default-image.png'}" class="pro-img" alt="${product.name}"></td>
+                    <td><img src="${product.image_1 != null ? '/uploads/products/' + product.image_1 : '/assets/admin/img/default_image.jpg'}" class="pro-img" alt="${product.name}"></td>
                     <td>${product.name}</td>
                     <td>${formattedDate}</td>
                     <td>Admin</td>
@@ -531,29 +589,6 @@
         });
     }
 
-    function editProduct(productId) {
-        $.ajax({
-            url: '/products/' + 'edit/' + productId,
-            method: 'GET',
-            success: function(data) {
-                $('#name').val(data.product.name);
-                $('#slug').val(data.product.slug);
-                $('#description').summernote('code', data.product.description);
-                $('#status').val(data.product.status);
-                if (data.product_1) {
-                    $('#imagePreview').attr('src', '/uploads/product/' + data.product.image_1).removeClass('hidden');
-                }
-                $('#submitBtn').text('Update');
-                $('#myExtraLargeModalLabel').text('Edit Product');
-                $('#productForm').attr('action', '/products/' + productId);
-                $('#product_id').val(productId);
-                $("#imagePreview").addClass("show-image-preview");
-                $("#removeImage").removeClass("hidden");
-
-            }
-        });
-    }
-
     function deleteProduct(productId) {
         Swal.fire({
             title: "Are you sure?",
@@ -576,12 +611,15 @@
                         fetchProducts();
                     }
                 });
-                // }
             }
         });
     }
     $('#product_search_btn').on('click', function(e) {
         e.preventDefault();
+        fetchProducts();
+    });
+
+    $('#product_search').on('keyup', function() {
         fetchProducts();
     });
 
@@ -605,7 +643,7 @@
     function toggleStatus(productId, status) {
         $.ajax({
             url: '/products/update-status',
-            method: 'put',
+            method: 'patch',
             data: {
                 id: productId,
                 status: status ? 1 : 0,
@@ -624,22 +662,48 @@
         });
     }
 
-    $("#inputGroupFile02").change(function(event) {
-        let file = event.target.files[0];
+    function previewImage(input, previewId, removeId) {
+        var file = input.files[0];
         if (file) {
-            let reader = new FileReader();
+            var reader = new FileReader();
             reader.onload = function(e) {
-                $("#imagePreview").attr("src", e.target.result).addClass("show-image-preview");
-                $("#removeImage").removeClass("hidden");
+                $("#" + previewId).attr('src', e.target.result).addClass('show-image-preview');
+                $("#" + removeId).removeClass('hidden');
             };
             reader.readAsDataURL(file);
         }
+    }
+
+    function removeImage(inputId, previewId, removeButtonId) {
+        $("#" + inputId).val("");
+        $("#" + previewId).attr("src", "").removeClass("show-image-preview");
+        $("#" + removeButtonId).addClass("hidden");
+    }
+
+    function modalScrollTop() {
+        let modalBody = $('.modal-body');
+        modalBody.animate({
+            scrollTop: modalBody.offset().top + modalBody.scrollTop()
+        }, 500);
+    }
+
+    $('#productModal').on('hidden.bs.modal', function() {
+        $('#productForm')[0].reset();
+        $('#product_id').val('');
     });
 
-    $("#removeImage").click(function() {
-        $("#inputGroupFile02").val("");
-        $("#imagePreview").attr("src", "").removeClass("show-image-preview");
-        $("#removeImage").addClass("hidden");
+    $('#product_search').on('input', function() {
+        if ($(this).val()) {
+            $('#clearSearch').show();
+        } else {
+            $('#clearSearch').hide();
+        }
+    });
+
+    $('#clearSearch').on('click', function() {
+        $('#product_search').val('').focus();
+        $(this).hide();
+        fetchProducts();
     });
 </script>
 

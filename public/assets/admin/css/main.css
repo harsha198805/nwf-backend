@@ -8055,7 +8055,7 @@ code {
 }
 
 .imagePreview{
-  max-width: 200px; 
+  max-width: 100px; 
   display: none;
   margin-left: 10px;
 }
@@ -8145,4 +8145,27 @@ span.error-text::first-letter {
 .modal-scrolls{
   max-height: 100vh;
   overflow-y: auto;
+}
+
+
+#category_search, #product_search {
+  padding-right: 30px;
+}
+
+.clear-icon {
+  position: absolute;
+  right: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  cursor: pointer;
+  display: none;
+  font-weight: 600;
+}
+
+#product_search:not(:placeholder-shown) ~ .clear-icon {
+  display: inline;
+}
+#category_search:not(:placeholder-shown) ~ .clear-icon {
+  display: inline;
 }

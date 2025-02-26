@@ -34,13 +34,13 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
             Route::get('/products/show/{product}','show')->name('products.show');
             Route::post('/products','store')->name('products.store');
             Route::get('/products/edit/{product}','edit')->name('products.edit');
-            Route::POST('/products/{product}','update')->name('products.update');
+            Route::post('/products/{product}','update')->name('products.update');
             Route::delete('/products/{product}','destroy')->name('products.destroy');
             Route::get('/products/search', 'search')->name('products.search');
             Route::get('/products/getdata', 'getdata')->name('products.getdata');    
             Route::get('/category_list', 'getCategoryList');
             Route::post('/add_new_category', 'addNewCategory');
-            Route::put('/products/update-status', 'updateStatus')->name('products.updateStatus');
+            Route::patch('/products/update-status', 'updateStatus')->name('products.updateStatus');
         });
     });
     Route::middleware(['auth', 'admin'])->group(function () {
@@ -50,10 +50,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
             Route::get('/categories/show/{category}','show')->name('categories.show');
             Route::post('/categories','store')->name('categories.store');
             Route::get('/categories/edit/{category}','edit')->name('categories.edit');
-            Route::POST('/categories/{category}','update')->name('categories.update');
+            Route::post('/categories/{category}','update')->name('categories.update');
             Route::delete('/categories/{category}','destroy')->name('categories.destroy');    
             Route::get('/categories/search', 'search')->name('categories.search');
             Route::get('/categories/getdata', 'getdata')->name('categories.getdata');
-            Route::put('/categories/update-status', 'updateStatus')->name('categories.updateStatus');
+            Route::patch('/categories/update-status', 'updateStatus')->name('categories.updateStatus');
         });
     });
