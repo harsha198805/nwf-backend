@@ -1,32 +1,56 @@
-@extends('products.layout')
+@extends('layouts.admin.admin_layout')
+
+
 @section('content')
-<div class="container">
-    <h1>Dashboard</h1>
 
-    <div class="row">
-        <!-- Product Count Box -->
-        <div class="col-md-4">
-            <div class="card bg-primary text-white mb-3">
-                <div class="card-body">
-                    <h4 class="card-title">Products</h4>
-                    <p class="card-text">Total: {{ $productCount }}</p>
-                    <a href="{{ route('products.index') }}" class="btn btn-light">View Products</a>
-                </div>
+
+<!-- Row start -->
+<div class="row gutters">
+    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="info-stats4">
+            <div class="info-icon">
+                <i class="icon-grid"></i>
+            </div>
+            <div class="sale-num">
+                <h3> {{ $categoryCount }}</h3>
+                <p>Categories</p>
             </div>
         </div>
-
-        <!-- Category Count Box -->
-        <div class="col-md-4">
-            <div class="card bg-success text-white mb-3">
-                <div class="card-body">
-                    <h4 class="card-title">Categories</h4>
-                    <p class="card-text">Total: {{ $categoryCount }}</p>
-                    <a href="{{ route('categories.index') }}" class="btn btn-light">View Categories</a>
-                </div>
+    </div>
+    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="info-stats4">
+            <div class="info-icon">
+                <i class="icon-box"></i>
+            </div>
+            <div class="sale-num">
+                <h3>{{ $productCount }}</h3>
+                <p>Products</p>
             </div>
         </div>
-
-        <!-- Add more count boxes as needed -->
+    </div>
+    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="info-stats4">
+            <div class="info-icon">
+                <i class="icon-question_answer"></i>
+            </div>
+            <div class="sale-num">
+                <h3>7500</h3>
+                <p>Blogs</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="info-stats4">
+            <div class="info-icon">
+                <i class="icon-user1"></i>
+            </div>
+            <div class="sale-num">
+                <h3>3500</h3>
+                <p>Users</p>
+            </div>
+        </div>
     </div>
 </div>
+<!-- Row end -->
+
 @endsection

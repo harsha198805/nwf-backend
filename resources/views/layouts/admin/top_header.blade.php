@@ -25,15 +25,21 @@
 							<div class="header-user">
 								<img src="{{ URL::to('assets/admin/img/user-default.png') }}" alt="avatar">
 							</div>
-							<h5>John Cena</h5>
+							<h5>{{ Auth::user()->name }}</h5>
 							<p>Admin</p>
 						</div>
 						<a href="profile.php"><i class="icon-user1"></i> My Profile</a>
-						<a href="index.php"><i class="icon-log-out1"></i> Sign Out</a>
+						<a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+						<i class="icon-log-out1"></i> Sign Out
+						</a>
+
+						<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+							@csrf
+						</form>
 					</div>
 				</div>
 			</li>
-		</ul>						
+		</ul>
 		<!-- Header actions end -->
 	</div>
 </header>
