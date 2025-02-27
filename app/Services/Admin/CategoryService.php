@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Admin;
 
-use App\Repositories\CategoryRepository;
+use App\Repositories\Admin\CategoryRepository;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryService

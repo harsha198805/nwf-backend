@@ -6,130 +6,129 @@ use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Services\BlogService;
+use App\Services\Admin\BlogService;
 
 class BlogController extends Controller
- {
-//     protected $categoryService;
-//     protected $paginationLimit = 10;
+{
+    protected $blogService;
+    protected $paginationLimit = 10;
 
-//     public function __construct(CategoryService $categoryService)
-//     {
-//         $this->middleware('auth');
-//         $this->categoryService = $categoryService;
-//     }
+    public function __construct(BlogService $blogService)
+    {
+        $this->middleware('auth');
+        $this->blogService = $blogService;
+    }
 
-//     public function index(Request $request)
-//     {
-//         $search = $request->input('search');
-//         $paginate = 10;
-//         $categories = $this->categoryService->getAllCategories($search, $this->paginationLimit);
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $blogs = $this->blogService->getAllblogs($search, $this->paginationLimit);
 
-//         return view('categories.index', compact('categories'));
-//     }
+        return view('admin.blogs.index', compact('blogs'));
+    }
 
-//     public function getdata(Request $request)
-//     {
-//         $search = $request->input('search');
-//         $categories = $this->categoryService->getAllCategories($search, $this->paginationLimit);
+    public function getdata(Request $request)
+    {
+        $search = $request->input('search');
+        $blogs = $this->blogService->getAllblogs($search, $this->paginationLimit);
 
-//         return response()->json(['categories' => $categories]);
-//     }
+        return response()->json(['blogs' => $blogs]);
+    }
 
-//     public function store(Request $request)
-//     {
-//         $validationErrors = $this->categoryService->validateCategory($request->all());
+    public function store(Request $request)
+    {
+        $validationErrors = $this->blogService->validateBlog($request->all());
 
-//         if ($validationErrors) {
-//             return response()->json(['errors' => $validationErrors]);
-//         }
+        if ($validationErrors) {
+            return response()->json(['errors' => $validationErrors]);
+        }
 
-//         $fileName = $this->handleFileUpload($request);
+        $fileName = $this->handleFileUpload($request);
 
-//         $data = $request->all();
-//         $data['image'] = $fileName;
-//         $this->categoryService->createCategory($data);
+        $data = $request->all();
+        $data['image'] = $fileName;
+        $this->blogService->createBlog($data);
 
-//         return response()->json(['success' => 'Category created successfully']);
-//     }
+        return response()->json(['success' => 'Blog created successfully']);
+    }
 
 
-//     public function edit($id)
-//     {
-//         $category = Category::find($id);
+    public function edit($id)
+    {
+        $blog = Blog::find($id);
 
-//         if ($category) {
-//             return response()->json(['category' => $category]);
-//         }
+        if ($blog) {
+            return response()->json(['blog' => $blog]);
+        }
 
-//         return response()->json(['error' => 'Category not found'], 404);
-//     }
+        return response()->json(['error' => 'Blog not found'], 404);
+    }
 
-//     public function update(Request $request, $id)
-//     {
-//         $validationErrors = $this->categoryService->validateCategory($request->all(), $id);
+    public function update(Request $request, $id)
+    {
+        $validationErrors = $this->blogService->validateBlog($request->all(), $id);
+        $blog = $this->blogService->findBlogById($id);
 
-//         if ($validationErrors) {
-//             return response()->json(['errors' => $validationErrors]);
-//         }
+        if ($validationErrors) {
+            return response()->json(['errors' => $validationErrors]);
+        }
 
-//         $fileName = $this->handleFileUpload($request);
+        if ($request->hasFile('image')) {
+            if ($blog->image && file_exists(public_path('uploads/blog/' . $blog->image))) {
+                unlink(public_path('uploads/blog/' . $blog->image));
+            }
+            $fileName = $this->handleFileUpload($request);
+        } else {
+            $fileName = $blog->image;
+        }
 
-//         $data = $request->all();
-//         $data['image'] = $fileName;
-//         $this->categoryService->updateCategory($id, $data);
+        $data = $request->all();
+        $data['image'] = $fileName;
+        $this->blogService->updateBlog($id, $data);
 
-//         return response()->json(['success' => 'Category updated successfully']);
-//     }
+        return response()->json(['success' => 'Blog updated successfully']);
+    }
 
-//     public function destroy($id)
-//     {
+    public function destroy($id)
+    {
 
-//         $isCategoryUsedInProducts = $this->categoryService->isCategoryUsedInProducts($id);
-//         if ($isCategoryUsedInProducts) {
-//             $attributes = ['id' => $id];
-//             $data = ['status' => 0];
-//             $result = $this->categoryService->updateStatus($attributes, $data);
-//             return response()->json(['success' => "Category is used in Product.\n Category is Inactive"]);
-//         } else {
-//             $category = $this->categoryService->findCategoryById($id);
+        $blog = $this->blogService->findBlogById($id);
 
-//             $deleteCategory = $this->categoryService->deleteCategory($id);
-//             if ($deleteCategory) {
-//                 if ($category->image && file_exists(public_path('uploads/category/' . $category->image))) {
-//                     unlink(public_path('uploads/category/' . $category->image));
-//                 }
-//             }
+        $deleteBlog = $this->blogService->deleteBlog($id);
+        if ($deleteBlog) {
+            if ($blog->image && file_exists(public_path('uploads/blog/' . $blog->image))) {
+                unlink(public_path('uploads/blog/' . $blog->image));
+            }
+        }
 
-//             return response()->json(['success' => 'Category deleted successfully']);
-//         }
-//     }
+        return response()->json(['success' => 'Blog deleted successfully']);
+    }
 
-//     public function updateStatus(Request $request)
-//     {
-//         $this->validate($request, [
-//             'status' => 'required|in:1,0',
-//         ]);
+    public function updateStatus(Request $request)
+    {
+        $this->validate($request, [
+            'status' => 'required|in:1,0',
+        ]);
 
-//         $attributes = ['id' => $request->id];
-//         $data = ['status' => $request->status];
-//         $result = $this->categoryService->updateStatus($attributes, $data);
-//         if (!$result) {
-//             return response()->json(['error' => 'Failed to update category status'], 500);
-//         }
+        $attributes = ['id' => $request->id];
+        $data = ['status' => $request->status];
+        $result = $this->blogService->updateStatus($attributes, $data);
+        if (!$result) {
+            return response()->json(['error' => 'Failed to update blog status'], 500);
+        }
 
-//         return response()->json(['success' => 'Status updated successfully']);
-//     }
+        return response()->json(['success' => 'Status updated successfully']);
+    }
 
-//     private function handleFileUpload(Request $request)
-//     {
-//         if ($request->hasFile('image')) {
-//             $file = $request->file('image');
-//             $extension = $file->getClientOriginalExtension();
-//             $fileName = time() . '_' . mt_rand(100000, 999999) . '.' . $extension;
-//             $file->move(public_path('uploads/category'), $fileName);
-//             return $fileName;
-//         }
-//         return null;
-//     }
+    private function handleFileUpload(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . mt_rand(100000, 999999) . '.' . $extension;
+            $file->move(public_path('uploads/blog'), $fileName);
+            return $fileName;
+        }
+        return null;
+    }
 }

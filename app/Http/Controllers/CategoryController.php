@@ -6,7 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Services\CategoryService;
+use App\Services\Admin\CategoryService;
 
 class CategoryController extends Controller
 {
@@ -22,10 +22,8 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $paginate = 10;
         $categories = $this->categoryService->getAllCategories($search, $this->paginationLimit);
-
-        return view('categories.index', compact('categories'));
+        return view('admin.categories.index', compact('categories'));
     }
 
     public function getdata(Request $request)
@@ -68,12 +66,18 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validationErrors = $this->categoryService->validateCategory($request->all(), $id);
-
+        $category = $this->categoryService->findCategoryById($id);
         if ($validationErrors) {
             return response()->json(['errors' => $validationErrors]);
         }
-
-        $fileName = $this->handleFileUpload($request);
+        if ($request->hasFile('image')) {
+            if ($category->image && file_exists(public_path('uploads/category/' . $category->image))) {
+                unlink(public_path('uploads/category/' . $category->image));
+            }
+            $fileName = $this->handleFileUpload($request);
+        } else {
+            $fileName = $category->image;
+        }
 
         $data = $request->all();
         $data['image'] = $fileName;

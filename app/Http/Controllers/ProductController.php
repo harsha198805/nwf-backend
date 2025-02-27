@@ -26,7 +26,7 @@ class ProductController extends Controller
         }
 
         $products = $query->orderBy('created_at', 'desc')->paginate(10);
-        return view('products.index', compact('products'));
+        return view('admin.products.index', compact('products'));
     }
     public function getdata(Request $request)
     {
@@ -70,61 +70,6 @@ class ProductController extends Controller
 
         return response()->json(['success' => 'Category created successfully', 'new_category_id' => $category->id]);
     }
-    // This method will show products page
-    public function index1()
-    {
-        $products = Product::orderBy('created_at', 'DESC')->paginate(5);
-
-        return view('products.index', compact('products'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
-    }
-
-    public function index111(Request $request)
-    {
-        // Fetch all categories for the filter
-        $categories = Category::all();
-
-        // Retrieve filter values from the request
-        $searchTerm = $request->input('search');
-        $categoryFilter = $request->input('category');
-        $minPrice = $request->input('min_price');
-        $maxPrice = $request->input('max_price');
-
-        // Start building the query
-        $products = Product::query();
-
-        // Apply search by product name
-        if ($searchTerm) {
-            $products->where('name', 'like', '%' . $searchTerm . '%');
-        }
-
-        // Apply category filter
-        if ($categoryFilter) {
-            $products->where('category_id', $categoryFilter);
-        }
-
-        // Apply price range filter
-        if ($minPrice && $maxPrice) {
-            $products->whereBetween('price', [$minPrice, $maxPrice]);
-        } elseif ($minPrice) {
-            $products->where('price', '>=', $minPrice);
-        } elseif ($maxPrice) {
-            $products->where('price', '<=', $maxPrice);
-        }
-
-        // Get the filtered products with pagination
-        $products = $products->paginate(10);
-
-        return view('products.index', compact('products', 'categories', 'searchTerm', 'categoryFilter', 'minPrice', 'maxPrice'))->with('i', (request()->input('page', 1) - 1) * 5);
-    }
-
-    // This method will show create product page
-    public function create()
-    {
-        $category = Category::orderBy('name', 'ASC')->get();
-        return view('products.create', compact('category'));
-    }
-
 
     public function store(Request $request)
     {

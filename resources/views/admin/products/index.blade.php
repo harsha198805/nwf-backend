@@ -298,7 +298,7 @@
                                 if (response.errors) {
                                     for (let field in response.errors) {
                                         if (response.errors.hasOwnProperty(field)) {
-                                            toastr.error( response.errors[field][0].charAt(0).toUpperCase() + response.errors[field][0].slice(1) + '\n Category may be Inactive');
+                                            toastr.error(response.errors[field][0].charAt(0).toUpperCase() + response.errors[field][0].slice(1) + '\n Category may be Inactive');
                                         }
                                     }
                                 }
@@ -534,9 +534,12 @@
             },
             success: function(data) {
                 let productList = '';
-                data.products.data.forEach(product => {
-                    const formattedDate = formatDate(product.created_at);
-                    productList += `
+                if (data.products.data.length == 0) {
+                    productList += `<tr><td class='text-danger text-center' colspan="6">No records found</td></tr>`;
+                } else {
+                    data.products.data.forEach(product => {
+                        const formattedDate = formatDate(product.created_at);
+                        productList += `
                 <tr>
                     <td><img src="${product.image_1 != null ? '/uploads/products/' + product.image_1 : '/assets/admin/img/default_image.jpg'}" class="pro-img" alt="${product.name}"></td>
                     <td>${product.name}</td>
@@ -570,20 +573,22 @@
                     </td>
                 </tr>
                 `;
-                });
-
+                    });
+                }
                 $('#productList').html(productList);
 
                 let paginationLinks = '';
-                data.products.links.forEach(link => {
-                    if (link.url) {
-                        let page = link.url.split('=')[1];
-                        let activeClass = link.active ? 'active' : '';
-                        paginationLinks += `<button class="btn btn-secondary btn-sm ${activeClass}" onclick="fetchProducts(${page})">${link.label}</button>`;
-                    } else {
-                        paginationLinks += `<button class="btn btn-secondary btn-sm disabled">${link.label}</button>`;
-                    }
-                });
+                if (data.products.data.length >= 10) {
+                    data.products.links.forEach(link => {
+                        if (link.url) {
+                            let page = link.url.split('=')[1];
+                            let activeClass = link.active ? 'active' : '';
+                            paginationLinks += `<button class="btn btn-secondary btn-sm ${activeClass}" onclick="fetchProducts(${page})">${link.label}</button>`;
+                        } else {
+                            paginationLinks += `<button class="btn btn-secondary btn-sm disabled">${link.label}</button>`;
+                        }
+                    });
+                }
                 $('#paginationLinks').html(paginationLinks);
             }
         });
