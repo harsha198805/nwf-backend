@@ -8161,6 +8161,7 @@ span.error-text::first-letter {
   cursor: pointer;
   display: none;
   font-weight: 600;
+  font-weight: bold;
 }
 
 #product_search:not(:placeholder-shown) ~ .clear-icon {

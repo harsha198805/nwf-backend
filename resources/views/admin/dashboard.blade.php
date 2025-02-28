@@ -12,7 +12,7 @@
                 <i class="icon-grid"></i>
             </div>
             <div class="sale-num">
-                <h3> {{ $categoryCount }}</h3>
+                <h3> {{ $categoryCount??0 }}</h3>
                 <p>Categories</p>
             </div>
         </div>
@@ -23,7 +23,7 @@
                 <i class="icon-box"></i>
             </div>
             <div class="sale-num">
-                <h3>{{ $productCount }}</h3>
+                <h3>{{ $productCount??0 }}</h3>
                 <p>Products</p>
             </div>
         </div>
@@ -34,7 +34,7 @@
                 <i class="icon-question_answer"></i>
             </div>
             <div class="sale-num">
-                <h3>7500</h3>
+                <h3>{{$blogCount??0}}</h3>
                 <p>Blogs</p>
             </div>
         </div>
@@ -45,7 +45,7 @@
                 <i class="icon-user1"></i>
             </div>
             <div class="sale-num">
-                <h3>3500</h3>
+                <h3>{{$userCount??0}}</h3>
                 <p>Users</p>
             </div>
         </div>

@@ -13,9 +13,9 @@
 		<ul class="header-actions">
 			<li class="dropdown">
 				<a href="#" id="userSettings" class="user-settings" data-toggle="dropdown" aria-haspopup="true">
-					<span class="user-name">John Cena</span>
+					<span class="user-name">{{ Auth::user()->name ??'' }}</span>
 					<span class="avatar">
-						<img src="{{ URL::to('assets/admin/img/user-default.png') }}" alt="avatar">
+						<img src="{{ URL::to( Auth::user()->image != null ? '/uploads/user_image/' . Auth::user()->image : 'assets/admin/img/user-default.png') }}" alt="avatar">
 						<span class="status busy"></span>
 					</span>
 				</a>
@@ -25,10 +25,10 @@
 							<div class="header-user">
 								<img src="{{ URL::to('assets/admin/img/user-default.png') }}" alt="avatar">
 							</div>
-							<h5>{{ Auth::user()->name }}</h5>
+							<h5>{{ Auth::user()->name ??'' }}</h5>
 							<p>Admin</p>
 						</div>
-						<a href="profile.php"><i class="icon-user1"></i> My Profile</a>
+						<a href="{{ route('profile.show') }}"><i class="icon-user1"></i> My Profile</a>
 						<a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
 						<i class="icon-log-out1"></i> Sign Out
 						</a>
@@ -46,7 +46,12 @@
 
 <div class="page-header">
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item">Home</li>
-		<li class="breadcrumb-item active">Dashboard</li>
+		@foreach(getBreadcrumbs() as $breadcrumb)
+            @if($loop->last)
+                <li class="breadcrumb-item active" aria-current="page">{{ $breadcrumb['label'] }}</li>
+            @else
+                <li class="breadcrumb-item"><a href="{{ $breadcrumb['url'] }}">{{ $breadcrumb['label'] }}</a></li>
+            @endif
+        @endforeach
 	</ol>
 </div>
