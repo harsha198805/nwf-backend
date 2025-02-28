@@ -23,7 +23,7 @@
 					<div class="header-profile-actions">
 						<div class="header-user-profile">
 							<div class="header-user">
-								<img src="{{ URL::to('assets/admin/img/user-default.png') }}" alt="avatar">
+								<img src="{{ URL::to( Auth::user()->image != null ? '/uploads/user_image/' . Auth::user()->image : 'assets/admin/img/user-default.png') }}" alt="avatar">
 							</div>
 							<h5>{{ Auth::user()->name ??'' }}</h5>
 							<p>Admin</p>

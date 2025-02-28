@@ -12,6 +12,7 @@ if (!function_exists('getBreadcrumbs')) {
             case 'admin.dashboard':
                 $breadcrumbs = [
                     ['label' => 'Home', 'url' => route('admin.dashboard')],
+                    ['label' => 'Dashboard', 'url' => route('admin.dashboard')],
                 ];
                 break;
             case 'categories.index':

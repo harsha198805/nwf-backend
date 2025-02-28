@@ -86,28 +86,7 @@ class ProfileController extends Controller
         $user->image = $imageName;
         $user->save();
 
-      //  return redirect()->back()->with('success', 'Profile updated successfully.');
         return response()->json(['success', 'Profile updated successfully','user' => $user]);
     }
-    // Handle profile update submission
-    public function update111(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . auth()->id(),
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
 
-        $user = auth()->user();
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
-
-        $user->save();
-
-        return redirect()->route('profile.show')->with('success', 'Profile updated successfully!');
-    }
 }
