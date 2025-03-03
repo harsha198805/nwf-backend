@@ -448,6 +448,8 @@
     function editProduct(productId) {
         modalScrollTop();
         getCategorylist();
+        $("#imagePreview_1,#imagePreview_2,#imagePreview_3,#imagePreview_4").attr("src", "").removeClass("show-image-preview");
+        $("#removeImage_1,#removeImage_2,#removeImage_3,#removeImage_4").addClass("hidden");
         $('.error-text').text('');
         $.ajax({
             url: '/products/' + 'edit/' + productId,
@@ -466,26 +468,16 @@
                 $('#meta_title').val(data.product.meta_title);
                 $('#meta_description').val(data.product.meta_description);
                 $('#focus_keywords').val(data.product.focus_keywords);
-                if (data.product.image_1 != null) {
-                    $('#imagePreview_1').attr('src', '/uploads/products/' + data.product.image_1).removeClass('hidden');
-                    $("#imagePreview_1").addClass("show-image-preview");
-                    $("#removeImage_1").removeClass("hidden");
-                }
-                if (data.product.image_2 != null) {
-                    $('#imagePreview_2').attr('src', '/uploads/products/' + data.product.image_2).removeClass('hidden');
-                    $("#imagePreview_2").addClass("show-image-preview");
-                    $("#removeImage_2").removeClass("hidden");
-                }
-                if (data.product.image_3 != null) {
-                    $('#imagePreview_3').attr('src', '/uploads/products/' + data.product.image_3).removeClass('hidden');
-                    $("#imagePreview_3").addClass("show-image-preview");
-                    $("#removeImage_3").removeClass("hidden");
-                }
-                if (data.product.image_4 != null) {
-                    $('#imagePreview_4').attr('src', '/uploads/products/' + data.product.image_4).removeClass('hidden');
-                    $("#imagePreview_4").addClass("show-image-preview");
-                    $("#removeImage_4").removeClass("hidden");
-                }
+
+                const images = ['image_1', 'image_2', 'image_3', 'image_4'];
+                images.forEach((image, index) => {
+                    if (data.product[image] != null) {
+                        $('#imagePreview_' + (index + 1)).attr('src', '/uploads/products/' + data.product[image])
+                            .removeClass('hidden')
+                            .addClass('show-image-preview');
+                        $('#removeImage_' + (index + 1)).removeClass('hidden');
+                    }
+                });
                 $('#new_arrivals').prop('checked', false);
                 if (data.product.new_arrivals) {
                     $('#new_arrivals').prop('checked', true);
@@ -504,6 +496,8 @@
     }
 
     function getCategorylist() {
+        let categoryList = document.getElementById('category_id');
+        categoryList.innerHTML = '';
         fetch('/category_list')
             .then(response => response.json())
             .then(data => {

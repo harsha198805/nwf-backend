@@ -37,6 +37,10 @@ class CategoryService
     {
         return $this->categoryRepository->getAllCategories($search, $paginate);
     }
+    public function getCategoryListFilter($where, $orderby,$columns=['*'])
+    {
+        return $this->categoryRepository->getCategoryListFilter($where, $orderby, $columns);
+    }
 
     public function createCategory($data)
     {

@@ -34,6 +34,17 @@ class CategoryRepository
         }
     }
 
+    public function getCategoryListFilter($where, $orderby, $columns = ['*'])
+    {
+        try {
+            return Category::where($where)
+                ->orderBy($orderby['column'], $orderby['sort'])
+                ->get();
+        } catch (Exception $exception) {
+            return false;
+        }
+    }
+
     public function createCategory($data)
     {
         try {
