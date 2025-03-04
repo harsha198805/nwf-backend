@@ -10,7 +10,7 @@ use Exception;
 
 class CategoryRepository
 {
-    public function getAllCategories($search = null, $paginate = null)
+    public function getAllCategories($search = null, $paginate = 10)
     {
         try {
             $query = Category::query();

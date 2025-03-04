@@ -49,7 +49,7 @@
                 <a class="d-block" href="quality-traceability.php">
                     Our Quality
                 </a>
-                <a class="d-block" href="fresh-catch.php">
+                <a class="d-block" href="{{ route('fresh-catch') }}">
                     Fresh Catch
                 </a>
                 <a class="d-block" href="contact.php">

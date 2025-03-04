@@ -2,11 +2,11 @@
 
 namespace App\Services\Admin;
 
-use App\Repositories\Admin\ProductRepository;
 use App\Models\Product;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\Admin\ProductRepository;
 
 class ProductService
 {

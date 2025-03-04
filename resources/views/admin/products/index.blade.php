@@ -286,7 +286,7 @@
 
                         $(this).val('');
                         $.ajax({
-                            url: '/add_new_category',
+                            url: '/admin/add_new_category',
                             method: 'POST',
                             data: {
                                 name: newCategory,
@@ -352,7 +352,7 @@
             let formData = new FormData(formElement);
 
             let productId = $('#product_id').val();
-            let url = productId ? '/products/' + productId : '/products';
+            let url = productId ? '/admin/products/' + productId : '/admin/products';
             let method = productId ? 'post' : 'POST';
             let msg_res = productId ? 'edited' : 'created';
 
@@ -452,7 +452,7 @@
         $("#removeImage_1,#removeImage_2,#removeImage_3,#removeImage_4").addClass("hidden");
         $('.error-text').text('');
         $.ajax({
-            url: '/products/' + 'edit/' + productId,
+            url: '/admin/products/' + 'edit/' + productId,
             method: 'GET',
             success: function(data) {
                 $('#category_id').val(data.product.category_id).trigger('change');
@@ -498,7 +498,7 @@
     function getCategorylist() {
         let categoryList = document.getElementById('category_id');
         categoryList.innerHTML = '';
-        fetch('/category_list')
+        fetch('/admin/category_list')
             .then(response => response.json())
             .then(data => {
                 let categoryList = document.getElementById('category_id');
@@ -521,7 +521,7 @@
     function fetchProducts(page = 1) {
         const search = $('#product_search').val();
         $.ajax({
-            url: '/products/getdata?page=' + page,
+            url: '/admin/products/getdata?page=' + page,
             method: 'GET',
             data: {
                 search: search
@@ -600,7 +600,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/products/' + productId,
+                    url: '/admin/products/' + productId,
                     method: 'DELETE',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')
@@ -641,7 +641,7 @@
 
     function toggleStatus(productId, status) {
         $.ajax({
-            url: '/products/update-status',
+            url: '/admin/products/update-status',
             method: 'patch',
             data: {
                 id: productId,

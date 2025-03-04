@@ -191,7 +191,7 @@
             let formData = new FormData(formElement);
 
             let blogId = $('#blog_id').val();
-            let url = blogId ? '/blogs/' + blogId : '/blogs';
+            let url = blogId ? '/admin/blogs/' + blogId : '/admin/blogs';
             let method = blogId ? 'post' : 'POST';
             let msg_res = blogId ? 'edited' : 'created';
 
@@ -257,7 +257,7 @@
         $('.error-text').text('');
         modalScrollTop();
         $.ajax({
-            url: '/blogs/' + 'edit/' + blogId,
+            url: '/admin/blogs/' + 'edit/' + blogId,
             method: 'GET',
             success: function(data) {
                 $('#name').val(data.blog.name);
@@ -283,7 +283,7 @@
     function fetchBlogs(page = 1) {
         const search = $('#blog_search').val();
         $.ajax({
-            url: '/blogs/getdata?page=' + page,
+            url: '/admin/blogs/getdata?page=' + page,
             method: 'GET',
             data: {
                 search: search
@@ -363,7 +363,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/blogs/' + blogId,
+                    url: '/admin/blogs/' + blogId,
                     method: 'DELETE',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')
@@ -404,7 +404,7 @@
 
     function toggleStatus(blogId, status) {
         $.ajax({
-            url: '/blogs/update-status',
+            url: '/admin/blogs/update-status',
             method: 'patch',
             data: {
                 id: blogId,

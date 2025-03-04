@@ -30,7 +30,7 @@
           </a>
         </div>
         <div class="menuFullScreen-links__item js-menuFullScreen-has-children">
-          <a href="fresh-catch.php">
+          <a href="{{ route('fresh-catch') }}">
             Fresh Catch
             <!-- <i class="icon-arrow-right"></i>
             <i class="icon-chevron-right"></i> -->

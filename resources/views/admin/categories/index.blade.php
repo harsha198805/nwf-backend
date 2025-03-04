@@ -170,7 +170,7 @@
             let formData = new FormData(formElement);
 
             let categoryId = $('#category_id').val();
-            let url = categoryId ? '/categories/' + categoryId : '/categories';
+            let url = categoryId ? '/admin/categories/' + categoryId : '/admin/categories';
             let method = categoryId ? 'post' : 'POST';
             let msg_res = categoryId ? 'edited' : 'created';
 
@@ -236,7 +236,7 @@
         $('.error-text').text('');
         modalScrollTop();
         $.ajax({
-            url: '/categories/' + 'edit/' + categoryId,
+            url: '/admin/categories/' + 'edit/' + categoryId,
             method: 'GET',
             success: function(data) {
                 $('#name').val(data.category.name);
@@ -259,7 +259,7 @@
     function fetchCategories(page = 1) {
         const search = $('#category_search').val();
         $.ajax({
-            url: '/categories/getdata?page=' + page,
+            url: '/admin/categories/getdata?page=' + page,
             method: 'GET',
             data: {
                 search: search
@@ -338,7 +338,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/categories/' + categoryId,
+                    url: '/admin/categories/' + categoryId,
                     method: 'DELETE',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')
@@ -379,7 +379,7 @@
 
     function toggleStatus(categoryId, status) {
         $.ajax({
-            url: '/categories/update-status',
+            url: '/admin/categories/update-status',
             method: 'patch',
             data: {
                 id: categoryId,

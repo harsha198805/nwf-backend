@@ -127,7 +127,7 @@
             let formElement = document.getElementById('myProfileForm');
             let formData = new FormData(formElement);
 
-            let url = '/profile/edit';
+            let url = '/admin/profile/edit';
             let method = 'POST';
             let msg_res = 'edited';
 
@@ -168,7 +168,7 @@
     $('#icon_mode_edit, #profile_user_name').on('click', function(e) {
         e.preventDefault();
         $.ajax({
-            url: '/profile/' + 'edit',
+            url: '/admin/profile/' + 'edit',
             method: 'GET',
             success: function(data) {
                 $('#name').val(data.user.name);

@@ -14,7 +14,7 @@ class ProductRepository
         $this->model = $model;
     }
 
-    public function getAllProducts($search = null, $paginate = null)
+    public function getAllProducts($search = null, $paginate = 10)
     {
         try {
             $query = $this->model::query();

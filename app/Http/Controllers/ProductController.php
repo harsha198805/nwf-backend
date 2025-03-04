@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Admin\ProductService;
-use App\Services\Admin\CategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Services\Admin\ProductService;
+use App\Services\Admin\CategoryService;
 
 class ProductController extends Controller
 {

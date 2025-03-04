@@ -11,9 +11,9 @@
   <meta name="author" content="Epartner Sri Lanka" />
 
   <!-- Favicons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="img/favicons/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="img/favicons/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="img/favicons/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ URL::to('assets/front/img/favicons/apple-touch-icon.png') }}" />
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ URL::to('assets/front/img/favicons/favicon-32x32.png') }}" />
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ URL::to('assets/front/img/favicons/favicon-16x16.png') }}" />
 
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="Northwest Fishery | Premium Seafood Excellence for Global Standards in Sri Lanka" />
