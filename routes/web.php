@@ -19,6 +19,9 @@ Route::fallback(function () {
 Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/fresh-catch', [HomeController::class, 'freshCatch'])->name('fresh-catch');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/quality-traceability', [HomeController::class, 'quality_traceability'])->name('quality_traceability');
 Route::get('/{slug}', [HomeController::class, 'productShow'])->name('product.show');
 
 Route::middleware(['auth'])->group(function () {

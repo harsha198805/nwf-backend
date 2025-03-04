@@ -572,7 +572,7 @@
                 $('#productList').html(productList);
 
                 let paginationLinks = '';
-                if (data.products.data.length >= 10) {
+                if (data.products.total > 10) {
                     data.products.links.forEach(link => {
                         if (link.url) {
                             let page = link.url.split('=')[1];

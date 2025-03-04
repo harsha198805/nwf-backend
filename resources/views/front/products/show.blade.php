@@ -117,7 +117,7 @@ $long_description = !empty($product->long_description) ? $product->long_descript
 
                         <div class="swiper-slide">
                             <div data-anim-child="slide-up delay-4">
-                                <a href="product.php" data-anim-child="slide-up delay-2" class="roomCard -type-2 -hover-button-center d-block bg-accent-1 rounded-16 overflow-hidden">
+                                <a href="{{ route('product.show', $datalist->slug) }}" data-anim-child="slide-up delay-2" class="roomCard -type-2 -hover-button-center d-block bg-accent-1 rounded-16 overflow-hidden">
                                     <div class="roomCard__image -no-line -hover-button-center__wrap">
                                         <img src="{{ asset('uploads/products/' . $datalist->image_1) }}" alt="image" class="">
 

@@ -333,7 +333,7 @@
                 $('#blogList').html(blogList);
 
                 let paginationLinks = '';
-                if (data.blogs.data.length >= 10) {
+                if (data.blogs.total > 10) {
                     data.blogs.links.forEach(link => {
                         if (link.url) {
                             let page = link.url.split('=')[1];

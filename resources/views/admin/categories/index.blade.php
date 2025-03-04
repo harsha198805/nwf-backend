@@ -309,7 +309,7 @@
                 $('#categoryList').html(categoryList);
 
                 let paginationLinks = '';
-                if (data.categories.data.length >= 10) {
+                if (data.categories.total > 10) {
                     data.categories.links.forEach(link => {
                         if (link.url) {
                             let page = link.url.split('=')[1];

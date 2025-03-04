@@ -40,26 +40,26 @@
             <div class="row x-gap-50 y-gap-15">
             <div class="col-sm-6">
                 <div class="y-gap-15 text-15 text-white-60 mt-60 md:mt-20">
-                <a class="d-block" href="index.php">
+                <a class="d-block" href="{{ route('home') }}">
                     Home
                 </a>
-                <a class="d-block" href="about.php">
+                <a class="d-block" href="{{ route('about') }}">
                     About Us
                 </a>
-                <a class="d-block" href="quality-traceability.php">
+                <a class="d-block" href="{{ route('quality_traceability') }}">
                     Our Quality
                 </a>
                 <a class="d-block" href="{{ route('fresh-catch') }}">
                     Fresh Catch
                 </a>
-                <a class="d-block" href="contact.php">
+                <a class="d-block" href="{{ route('contact') }}">
                     Contact Us
                 </a>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="y-gap-15 text-15 text-white-60 mt-60 md:mt-20">
-                <a class="d-block" href="about.php">
+                <a class="d-block" href="{{ route('about') }}">
                     Process
                 </a>
                 <a class="d-block" href="gallery.php">
@@ -68,7 +68,7 @@
                 <a class="d-block" href="blogs.php">
                     Blogs
                 </a>
-                <a class="d-block" href="contact.php">
+                <a class="d-block" href="{{ route('contact') }}">
                     Help
                 </a>
                 <a class="d-block" href="https://maps.app.goo.gl/HeJ4RWAw1RGtFgT99" target="new">

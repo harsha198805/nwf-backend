@@ -19,7 +19,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        $categoriesList = $this->categoryService->getAllCategories();
+        $categoriesList = $this->categoryService->getAllCategoriesWithImage();
         return view('front.home', compact('categoriesList'));
     }
 
@@ -39,5 +39,20 @@ class HomeController extends Controller
         $similarProducts = $this->productService->findSimilarProducts($product->category_id, $product->id, $take = 20);
 
         return view('front.products.show', compact('product', 'similarProducts'));
+    }
+
+    public function about()
+    {
+        return view('front.about');
+    }
+
+    public function quality_traceability()
+    {
+        return view('front.quality_traceability');
+    }
+
+    public function contact()
+    {
+        return view('front.contact');
     }
 }

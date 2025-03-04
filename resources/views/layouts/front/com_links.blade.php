@@ -25,7 +25,7 @@
       </button>
       <div class="menuFullScreen-links js-menuFullScreen-links">
         <div class="menuFullScreen-links__item js-menuFullScreen-has-children">
-          <a href="index.php">
+          <a href="{{ route('home') }}">
             Home
           </a>
         </div>
@@ -69,12 +69,12 @@
           </div> -->
         </div>
         <div class="menuFullScreen-links__item js-menuFullScreen-has-children">
-          <a href="about.php">
+          <a href="{{ route('about') }}">
             About
           </a>
         </div>
         <div class="menuFullScreen-links__item js-menuFullScreen-has-children">
-          <a href="quality-traceability.php">
+          <a href="{{ route('quality_traceability') }}">
             Quality & Traceability
           </a>
         </div>
@@ -84,7 +84,7 @@
           </a>
         </div>
         <div class="menuFullScreen-links__item">
-          <a href="contact.php">
+          <a href="{{ route('contact') }}">
             Contact
           </a>
         </div>

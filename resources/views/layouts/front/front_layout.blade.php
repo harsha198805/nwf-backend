@@ -27,13 +27,13 @@
           </div>
           <div class="header__center">
             <div class="header__logo">
-            <a href="index.php"><img src="{{ URL::to('assets/front/img/general/logo.png') }}" alt="Northwest Fishery | Premium Seafood Excellence for Global Standards in Sri Lanka"></a>
+            <a href="{{ route('home') }}"><img src="{{ URL::to('assets/front/img/general/logo.png') }}" alt="Northwest Fishery | Premium Seafood Excellence for Global Standards in Sri Lanka"></a>
           </div>
           <div class="header__right d-flex items-center h-full">
             <button class="button mr-30 xl:mr-0">
               EN <i class="icon-chevron-down ml-15"></i>
             </button>
-            <a href="contact.php" class="button -md -accent-1 bg-white rounded-16 xl:d-none">
+            <a href="{{ route('contact') }}" class="button -md -accent-1 bg-white rounded-16 xl:d-none">
               GET IN TOUCH
             </a>
           </div>

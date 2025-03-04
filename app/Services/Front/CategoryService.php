@@ -17,6 +17,10 @@ class CategoryService
     {
         return $this->categoryRepository->getAllCategories();
     }
+    public function getAllCategoriesWithImage()
+    {
+        return $this->categoryRepository->getAllCategoriesWithImage();
+    }
     public function getCategoriesWithProducts()
     {
         return $this->categoryRepository->getAllWithProducts();

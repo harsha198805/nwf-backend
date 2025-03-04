@@ -2,7 +2,7 @@
 
 	<!-- Sidebar brand start  -->
 	<div class="sidebar-brand">
-		<a href="index.php" class="logo">
+		<a href="{{ route('admin.dashboard') }}" class="logo">
 			<img src="{{ URL::to('assets/admin/img/logo.png') }}" alt="System" />
 		</a>
 	</div>

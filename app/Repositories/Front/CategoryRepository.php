@@ -16,6 +16,17 @@ class CategoryRepository
             return response()->json(['error' => 'Unable to retrieve categories at the moment.'], 500);
         }
     }
+    public function getAllCategoriesWithImage()
+    {
+        try {
+            return Category::where('status', 1)
+            ->whereNotNull('image')
+            ->get();
+        } catch (Exception $e) {
+            // \Log::error('Error fetching categories: ' . $e->getMessage());
+            return response()->json(['error' => 'Unable to retrieve categories at the moment.'], 500);
+        }
+    }
 
     public function getAllWithProducts()
     {
