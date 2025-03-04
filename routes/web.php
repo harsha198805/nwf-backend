@@ -8,7 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ProfileController;
 
-Route::get('/', function () {
+Route::get('/login', function () {
     return redirect()->route('login');
 });
 
@@ -16,7 +16,7 @@ Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
 Auth::routes();
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 Route::middleware(['auth'])->group(function () {

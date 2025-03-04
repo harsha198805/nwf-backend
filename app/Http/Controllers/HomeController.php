@@ -2,36 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\Category;
-use Illuminate\Support\Facades\Auth;
+use App\Services\Front\CategoryService;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    protected $categoryService;
+
+    public function __construct(CategoryService $categoryService)
     {
-        $this->middleware('auth');
+        $this->categoryService = $categoryService;
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        if (auth()->user()->role == 'admin') {
-            return redirect()->route('admin.dashboard');
-        }else if (auth()->user()->role == 'user') {
-            return redirect()->route('user.dashboard');
-        }else{
-        return view('home');
-        }
+        $categoriesList = $this->categoryService->getAllCategories();
+        $categories = $this->categoryService->getCategoriesWithProducts();
+        return view('home', compact('categories','categoriesList'));
     }
 }
